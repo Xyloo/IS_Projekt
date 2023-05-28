@@ -229,3 +229,9 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Angular cache
+ClientApp/.angular/cache
+
+# Migrations (db might change a bit still)
+Migrations/

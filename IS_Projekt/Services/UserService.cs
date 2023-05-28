@@ -12,8 +12,8 @@ namespace IS_Projekt.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository _userRepository;
-        private PasswordHasher<User> _passwordHasher;
+        private readonly IUserRepository _userRepository;
+        private readonly PasswordHasher<User> _passwordHasher;
         private readonly string _jwtKey;
 
         public UserService(IUserRepository userRepository, IOptions<JwtSettings> jwtSettings)
@@ -24,9 +24,12 @@ namespace IS_Projekt.Services
         }
 
 
-        public async Task<User> CreateUser(string username, string password)
+        public async Task<User?> CreateUser(string username, string password)
         {
-            User user = new User();
+            var userExists = await _userRepository.GetUserByUsername(username);
+            if (userExists != null) //if user exists, we can't create a new one
+                return null;
+            var user = new User();
             user.Username = username;
             user.Password = _passwordHasher.HashPassword(user, password);
             user.Role = "user";

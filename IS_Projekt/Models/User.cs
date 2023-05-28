@@ -10,7 +10,7 @@ namespace IS_Projekt.Models
         [MaxLength(32)]
         public string Username { get; set; }
         [Required]
-        [MaxLength(32)]
+        [MaxLength(100)]
         public string Password { get; set; }
         [Required]
         public string Role { get; set; }

@@ -13,9 +13,14 @@ namespace IS_Projekt.Repos
             _context = context;
         }
 
-        public async Task<User> GetUser(int id)
+        public async Task<User?> GetUser(int id)
         {
             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<User?> GetUserByUsername(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<IEnumerable<User>> GetUsers()

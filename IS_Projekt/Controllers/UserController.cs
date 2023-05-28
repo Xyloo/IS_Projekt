@@ -26,7 +26,7 @@ namespace IS_Projekt.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDto userDto)
         {
-            User user = await _userService.CreateUser(userDto.Username, userDto.Password);
+            var user = await _userService.CreateUser(userDto.Username, userDto.Password);
 
             return Ok();
         }
