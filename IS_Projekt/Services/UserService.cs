@@ -1,5 +1,8 @@
-﻿using IS_Projekt.Models;
+﻿using IS_Projekt.Extensions;
+using IS_Projekt.Models;
+using IS_Projekt.Repos;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -7,28 +10,36 @@ using System.Text;
 
 namespace IS_Projekt.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
+        private IUserRepository _userRepository;
         private PasswordHasher<User> _passwordHasher;
-        private string _jwtKey;
+        private readonly string _jwtKey;
 
-        public UserService(string jwtKey)
+        public UserService(IUserRepository userRepository, IOptions<JwtSettings> jwtSettings)
         {
+            _userRepository = userRepository;
             _passwordHasher = new PasswordHasher<User>();
-            _jwtKey = jwtKey;
+            _jwtKey = jwtSettings.Value.Key;
         }
 
 
-        public User CreateUser(string username, string password)
+        public async Task<User> CreateUser(string username, string password)
         {
             User user = new User();
             user.Username = username;
             user.Password = _passwordHasher.HashPassword(user, password);
-
-            // Save the user to the database
-
+            user.Role = "user";
+            await _userRepository.CreateUser(user);
             return user;
         }
+
+        //get all users
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            return await _userRepository.GetUsers();
+        }
+
 
         public bool VerifyPassword(User user, string providedPassword)
         {

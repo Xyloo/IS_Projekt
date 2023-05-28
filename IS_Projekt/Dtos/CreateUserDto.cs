@@ -1,19 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IS_Projekt.Models
+namespace IS_Projekt.Dtos
 {
-    public class User
+    public class CreateUserDto
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
         [MaxLength(32)]
         public string Username { get; set; }
+
         [Required]
         [MaxLength(32)]
         public string Password { get; set; }
-        [Required]
-        public string Role { get; set; }
-
     }
+
 }

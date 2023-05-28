@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IS_Projekt.Repos
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
 

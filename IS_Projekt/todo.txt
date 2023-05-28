@@ -1,0 +1,17 @@
+﻿dotnet ef migrations add InitialCreate
+
+dotnet ef database update
+
+VIEW -> SQL Server Object Explorer -> 
+	name localhost,1433 
+	password !root123456
+
+
+userservice na interfejs
+
+//sprawdz czy uzytkownik istnieje podczas usercreate
+//dodac min length do hasla?
+//createusercontroller sprawdz najpierw czy uzytkownik istnieje
+//dodaj utoryzacje na rozne getuser getusers
+//seeder dla uzytkownikow
+//dodaj role

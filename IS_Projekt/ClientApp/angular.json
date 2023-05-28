@@ -132,5 +132,8 @@
       }
     }
   },
-  "defaultProject": "IS_Projekt"
+  "defaultProject": "IS_Projekt",
+  "cli": {
+    "analytics": false
+  }
 }
