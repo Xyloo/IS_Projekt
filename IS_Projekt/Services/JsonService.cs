@@ -54,7 +54,7 @@ namespace IS_Projekt.Services
             var InternetUseDataList = InternetUseData.Select(data => new InternetUse
             {
                 IndividualCriteria = data.indic_is,
-                Country = CountryCodes.Countries[data.geo] ?? data.geo, //tutaj blad
+                Country = CountryCodes.Countries[data.geo],
                 Year = data.TIME_PERIOD,
                 Value = data.OBS_VALUE ?? 0.0
             }).ToList();

@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <None Update="Resources\internet_use.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
