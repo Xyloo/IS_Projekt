@@ -2,7 +2,7 @@
 
 namespace IS_Projekt.Services
 {
-    public interface IXmlService : IFileService
+    public interface IJsonService : IFileService
     {
     }
 }

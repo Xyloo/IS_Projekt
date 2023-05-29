@@ -8,14 +8,29 @@ namespace IS_Projekt.Services
 {
     public class XmlService : IXmlService
     {
-        private readonly IXmlRepository _xmlRepository;
+        private readonly IFileDataRepository _xmlRepository;
 
         public XmlService(IXmlRepository xmlRepository)
         {
             _xmlRepository = xmlRepository;
         }
 
-        public async Task<IEnumerable<InternetUse>> ImportInternetUseDataFromXmlFile(string path)
+        public Task ExportECommerceDataToFile(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ExportInternetUseDataToFile(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ECommerce>> ImportECommerceDataFromFile(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<InternetUse>> ImportInternetUseDataFromFile(string path)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(path);
@@ -31,10 +46,10 @@ namespace IS_Projekt.Services
                 internetUse.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
                 internetUse.Value = double.Parse(GetNodeValue(observation, "OBS_VALUE")!, CultureInfo.InvariantCulture);
                 internetUseList.Add(internetUse);
-            }   
-            return await _xmlRepository.ImportInternetUseDataFromXmlFile(internetUseList);
-          
+            }
+            return await _xmlRepository.ImportDataInternetUse(internetUseList);
         }
+
         private string? GetNodeValue(XmlNode parentNode, string nodeName)
         {
             XmlNode? node = parentNode.SelectSingleNode(nodeName);
