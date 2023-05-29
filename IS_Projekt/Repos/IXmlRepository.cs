@@ -2,8 +2,6 @@
 
 namespace IS_Projekt.Repos
 {
-    public interface IXmlRepository
-    {
-        Task<IEnumerable<InternetUse>> ImportInternetUseDataFromXmlFile(IEnumerable<InternetUse> parsedXml);
-    }
+    public interface IXmlRepository : IFileDataRepository
+    {}
 }

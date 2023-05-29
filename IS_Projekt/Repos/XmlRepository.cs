@@ -14,12 +14,27 @@ namespace IS_Projekt.Repos
             _logger = logger;
         }
 
-        public async Task<IEnumerable<InternetUse>> ImportInternetUseDataFromXmlFile(IEnumerable<InternetUse> parsedXml)
+        public async Task<IEnumerable<InternetUse>> ImportDataInternetUse(IEnumerable<InternetUse> parsedData)
         {
-            _context.InternetUseData.AddRange(parsedXml);
+            _context.InternetUseData.AddRange(parsedData);
             var insertedAmount = await _context.SaveChangesAsync();
             _logger.LogInformation($"Inserted {insertedAmount} rows into database");
-            return parsedXml;
+            return parsedData;
+        }
+
+        public async Task<IEnumerable<InternetUse>> ExportDataInternetUse()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<ECommerce>> ImportDataECommerce(IEnumerable<ECommerce> parsedData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<ECommerce>> ExportDataECommerce()
+        {
+            throw new NotImplementedException();
         }
     }
 }
