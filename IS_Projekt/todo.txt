@@ -21,7 +21,7 @@ userservice na interfejs
 //service na xml, jsona
 //api soapowe i restowe
 
-//.json -> DATAFLOW, LAST UPDATE, FREQ, IND_TYPE, OBS_FLAG do wyjebania,, unit indicm geo timne obs_value
+//.json -> DATAFLOW, LAST UPDATE, FREQ, IND_TYPE, OBS_FLAG do wyrzucenia,, unit indicm geo timne obs_value
 
 country -> geo -> enum
 IndividualCriteria -> indic_is
@@ -34,3 +34,9 @@ VALUE -> OBS_VALUE
 // to samo z serwisami 1 interfejs 3 klasy
 // serwis  + kontroler crud na dane -> insertowanie do db itp
 // 
+
+ecommerce.json 5663 -> NULL OBS_VALUE
+
+json ecommerce mozna zmienic na jakas inna nazwe -> takie same obiekty sa dla jednego i drugiego chyba yea
+
+problem z import z internet use jakis null i dictionary sie wywala nie mam isly na to
