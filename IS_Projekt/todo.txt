@@ -9,11 +9,15 @@ VIEW -> SQL Server Object Explorer ->
 
 userservice na interfejs
 
-//sprawdz czy uzytkownik istnieje podczas usercreate
+
 //dodac min length do hasla?
 //createusercontroller sprawdz najpierw czy uzytkownik istnieje
 //dodaj utoryzacje na rozne getuser getusers
 //seeder dla uzytkownikow
+<<<<<<< HEAD
+=======
+//dodaj role
+>>>>>>> master
 //service na xml, jsona
 //api soapowe i restowe
 
