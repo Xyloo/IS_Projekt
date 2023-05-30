@@ -7,10 +7,6 @@ VIEW -> SQL Server Object Explorer ->
 	password !root123456
 
 
-userservice na interfejs
-
-
-//dodac min length do hasla?
 //createusercontroller sprawdz najpierw czy uzytkownik istnieje
 //dodaj utoryzacje na rozne getuser getusers
 //seeder dla uzytkownikow
@@ -38,5 +34,7 @@ VALUE -> OBS_VALUE
 ecommerce.json 5663 -> NULL OBS_VALUE
 
 json ecommerce mozna zmienic na jakas inna nazwe -> takie same obiekty sa dla jednego i drugiego chyba yea
+=
 
-problem z import z internet use jakis null i dictionary sie wywala nie mam isly na to
+
+ExportECommerceDataToFile do testa
