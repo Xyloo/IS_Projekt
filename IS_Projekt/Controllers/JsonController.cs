@@ -29,8 +29,6 @@ namespace IS_Projekt.Controllers
             return Ok(data);
         }
 
-
-
         [HttpGet("export/ecommerce")]
         public async Task<IActionResult> ExportECommerce()
         {
@@ -43,7 +41,6 @@ namespace IS_Projekt.Controllers
                 return NotFound();
             }
 
-            // Set the content disposition header so the browser knows it's a file.
             var contentDisposition = new ContentDisposition
             {
                 FileName = Path.GetFileName(filePath),
@@ -67,7 +64,6 @@ namespace IS_Projekt.Controllers
                 return NotFound();
             }
 
-            // Set the content disposition header so the browser knows it's a file.
             var contentDisposition = new ContentDisposition
             {
                 FileName = Path.GetFileName(filePath),
@@ -78,10 +74,5 @@ namespace IS_Projekt.Controllers
 
             return PhysicalFile(filePath, "application/json");
         }
-
-
-
-
-
     }
 }
