@@ -7,6 +7,7 @@ namespace IS_Projekt.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<InternetUse> InternetUseData { get; set; }
+        public DbSet<ECommerce> ECommerceData { get; set; }
         // tutaj pozniej inne dbset dla danych
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

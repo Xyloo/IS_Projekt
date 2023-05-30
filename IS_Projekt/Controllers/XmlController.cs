@@ -7,7 +7,7 @@ namespace IS_Projekt.Controllers
     [Route("api/xml")]
     public class XmlController : ControllerBase
     {
-        private readonly IXmlService _xmlService;
+        private readonly IFileService _xmlService;
         public XmlController(IXmlService xmlService)
         {
             _xmlService = xmlService;
@@ -16,7 +16,7 @@ namespace IS_Projekt.Controllers
         [HttpGet] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportXmlFile()
         {
-            var xml = await _xmlService.ImportInternetUseDataFromXmlFile("./internet_use.xml");
+            var xml = await _xmlService.ImportInternetUseDataFromFile("./Resources/internet_use.xml");
             return Ok(xml);
         }
     }

@@ -43,9 +43,9 @@ namespace IS_Projekt.Extensions
             { "MK", "North Macedonia" },
             { "AL", "Albania" },
             { "RS", "Serbia" },
-            { "TR", "Türkiye" },
+            { "TR", "Turkey" },
             { "XK", "Kosovo" },
-            { "EU27_2020", "Unia Europejska" }
+            { "EU27_2020", "European Union" }
         };
     }
 }
