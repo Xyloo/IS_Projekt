@@ -1,12 +1,10 @@
-﻿using IS_Projekt.Models;
+﻿using IS_Projekt.Extensions;
+using IS_Projekt.Models;
 namespace IS_Projekt.Services
 {
     public interface IFileService
     {
-        Task<IEnumerable<InternetUse>> ImportInternetUseDataFromFile(string path);
-        Task<IEnumerable<ECommerce>> ImportECommerceDataFromFile(string path);
-        Task ExportECommerceDataToFile(string path); ///? cos takiego
-        Task ExportInternetUseDataToFile(string path);
-
+        Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType);
+        Task ExportDataToFile(string path, DataTypes dataType);
     }
 }

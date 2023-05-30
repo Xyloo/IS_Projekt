@@ -6,57 +6,50 @@ using System.Xml;
 
 namespace IS_Projekt.Services
 {
-    public class XmlService : IXmlService
+    public class XmlService : IFileService
     {
         private readonly IFileDataRepository _xmlRepository;
 
-        public XmlService(IXmlRepository xmlRepository)
+        public XmlService(IFileDataRepository xmlRepository)
         {
             _xmlRepository = xmlRepository;
         }
 
-        public Task ExportECommerceDataToFile(string path)
+        public Task ExportDataToFile(string path, DataTypes dataType)
         {
             throw new NotImplementedException();
         }
 
-        public Task ExportInternetUseDataToFile(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ECommerce>> ImportECommerceDataFromFile(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<InternetUse>> ImportInternetUseDataFromFile(string path)
+        public async Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(path);
 
-            var internetUseList = new List<InternetUse>();
+            var dataList = new List<DataModel>();
             var allObservations = xmlDoc.SelectNodes("//row");
 
             foreach (XmlNode observation in allObservations!)
             {
-                var internetUse = new InternetUse();
-                internetUse.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
-                internetUse.IndividualCriteria = GetNodeValue(observation, "indic_is")!;
-                internetUse.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
-                internetUse.Value = double.Parse(GetNodeValue(observation, "OBS_VALUE")!, CultureInfo.InvariantCulture);
-                internetUseList.Add(internetUse);
+                var data = new DataModel();
+                data.DataType = dataType switch
+                {
+                    DataTypes.ECommerce => "ECommerce",
+                    DataTypes.InternetUse => "InternetUse",
+                    _ => throw new ArgumentException("Invalid data type")
+                };
+                data.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
+                data.IndividualCriteria = GetNodeValue(observation, "indic_is")!;
+                data.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
+                data.UnitOfMeasure = GetNodeValue(observation, "unit")!;
+                data.Value = double.Parse(GetNodeValue(observation, "OBS_VALUE")!, CultureInfo.InvariantCulture);
+                dataList.Add(data);
             }
-            return await _xmlRepository.ImportDataInternetUse(internetUseList);
+            return await _xmlRepository.ImportData(dataList);
         }
 
         private string? GetNodeValue(XmlNode parentNode, string nodeName)
         {
             XmlNode? node = parentNode.SelectSingleNode(nodeName);
-            if (node == null)
-            {
-                return null;
-            }
             return node?.InnerText.Trim();
         }
     }
