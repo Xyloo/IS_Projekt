@@ -8,7 +8,7 @@ namespace IS_Projekt.Controllers
 {
     [ApiController]
     [Route("api/json")]
-    public class JsonController : ControllerBase
+    public class JsonController : ControllerBase, IDataController
     {
         private readonly IFileService _jsonService;
         public JsonController(IFileService jsonService)

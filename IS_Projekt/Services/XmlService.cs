@@ -15,9 +15,41 @@ namespace IS_Projekt.Services
             _xmlRepository = xmlRepository;
         }
 
-        public Task ExportDataToFile(string path, DataTypes dataType)
+        public async Task ExportDataToFile(string path, DataTypes dataType)
         {
-            throw new NotImplementedException();
+            var xmlDocument = new XmlDocument();
+            var xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "UTF-8", null);
+            var root = xmlDocument.CreateElement("root");
+            xmlDocument.InsertBefore(xmlDeclaration, xmlDocument.DocumentElement);
+            xmlDocument.AppendChild(root);
+            var data = await _xmlRepository.ExportData(dataType);
+            foreach ( var item in data)
+            {
+                var row = xmlDocument.CreateElement("row");
+
+                var geo = xmlDocument.CreateElement("geo");
+                geo.InnerText = item.Country;
+                row.AppendChild(geo);
+
+                var indic_is = xmlDocument.CreateElement("indic_is");
+                indic_is.InnerText = item.IndividualCriteria;
+                row.AppendChild(indic_is);
+
+                var unit = xmlDocument.CreateElement("unit");
+                unit.InnerText = item.UnitOfMeasure;
+                row.AppendChild(unit);
+
+                var time_period = xmlDocument.CreateElement("TIME_PERIOD");
+                time_period.InnerText = item.Year.ToString();
+                row.AppendChild(time_period);
+
+                var obs_value = xmlDocument.CreateElement("OBS_VALUE");
+                obs_value.InnerText = item.Value.ToString(CultureInfo.InvariantCulture);
+                row.AppendChild(obs_value);
+
+                root.AppendChild(row);
+            }
+            xmlDocument.Save(path);
         }
 
         public async Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType)
