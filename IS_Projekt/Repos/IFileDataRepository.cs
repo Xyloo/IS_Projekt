@@ -1,12 +1,11 @@
-﻿using IS_Projekt.Models;
+﻿using IS_Projekt.Extensions;
+using IS_Projekt.Models;
 
 namespace IS_Projekt.Repos
 {
     public interface IFileDataRepository
     {
-        Task<IEnumerable<InternetUse>> ImportDataInternetUse(IEnumerable<InternetUse> parsedData);
-        Task<IEnumerable<InternetUse>> ExportDataInternetUse();
-        Task<IEnumerable<ECommerce>> ImportDataECommerce(IEnumerable<ECommerce> parsedData);
-        Task<IEnumerable<ECommerce>> ExportDataECommerce();
+        Task<IEnumerable<DataModel>> ImportData(IEnumerable<DataModel> parsedData);
+        Task<IEnumerable<DataModel>> ExportData(DataTypes dataType);
     }
 }

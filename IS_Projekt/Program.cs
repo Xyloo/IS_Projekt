@@ -13,11 +13,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddScoped<IXmlRepository, XmlRepository>();
-builder.Services.AddScoped<IXmlService, XmlService>();
+builder.Services.AddScoped<IFileDataRepository, FileDataRepository>();
 
-builder.Services.AddScoped<IJsonRepository, JsonRepository>();
-builder.Services.AddScoped<IJsonService, JsonService>();
+builder.Services.AddScoped<IFileService, XmlService>();
+builder.Services.AddScoped<IFileService, JsonService>();
 
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));

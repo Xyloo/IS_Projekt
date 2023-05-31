@@ -2,40 +2,39 @@
 using IS_Projekt.Models;
 using IS_Projekt.Repos;
 using Newtonsoft.Json;
-using System.Text.Json;
 
 namespace IS_Projekt.Services
 {
-    public class JsonService : IJsonService
+    public class JsonService : IFileService
     {
         public readonly IFileDataRepository _repository;
 
-        public JsonService(IJsonRepository jsonRepository)
+        public JsonService(IFileDataRepository jsonRepository)
         {
             _repository = jsonRepository;
         }
 
-        public async Task ExportECommerceDataToFile(string path)
+        public async Task ExportDataToFile(string path, DataTypes dataType)
         {
-            var eCommerceData = await _repository.ExportDataECommerce();
-            var jsonString = JsonConvert.SerializeObject(eCommerceData);
+            var data = await _repository.ExportData(dataType);
+            var jsonString = JsonConvert.SerializeObject(data);
             await File.WriteAllTextAsync(path, jsonString);
         }
 
-        public async Task ExportInternetUseDataToFile(string path)
+        public async Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType)
         {
-            var InternetUseData = await _repository.ExportDataInternetUse();
-            var jsonString = JsonConvert.SerializeObject(InternetUseData);
-            await File.WriteAllTextAsync(path, jsonString);
-        }
-
-        public async Task<IEnumerable<ECommerce>> ImportECommerceDataFromFile(string path)
-        {
-            using FileStream fs = new FileStream(path, FileMode.Open);
-            var eCommerceData = await System.Text.Json.JsonSerializer.DeserializeAsync<List<JsonECommerceData>>(fs);
-
-            var eCommerceList = eCommerceData.Select(data => new ECommerce
+            await using var fs = new FileStream(path, FileMode.Open);
+            var deserializedData = await System.Text.Json.JsonSerializer.DeserializeAsync<List<JsonDataModel>>(fs);
+            var dataT = dataType switch
             {
+                DataTypes.ECommerce => "ECommerce",
+                DataTypes.InternetUse => "InternetUse",
+                _ => throw new ArgumentException("Invalid data type")
+            };
+
+            var dataList = deserializedData.Select(data => new DataModel
+            {
+                DataType = dataT,
                 IndividualCriteria = data.indic_is,
                 Country = CountryCodes.Countries[data.geo],
                 UnitOfMeasure = data.unit,
@@ -43,24 +42,8 @@ namespace IS_Projekt.Services
                 Value = data.OBS_VALUE ?? 0.0
             }).ToList();
 
-            return await _repository.ImportDataECommerce(eCommerceList);
+            return await _repository.ImportData(dataList);
         }
 
-        public async Task<IEnumerable<InternetUse>> ImportInternetUseDataFromFile(string path)
-        {
-            using FileStream fs = new FileStream(path, FileMode.Open);
-            var InternetUseData = await System.Text.Json.JsonSerializer.DeserializeAsync<List<JsonECommerceData>>(fs);
-
-            var InternetUseDataList = InternetUseData.Select(data => new InternetUse
-            {
-                IndividualCriteria = data.indic_is,
-                Country = CountryCodes.Countries[data.geo],
-                Year = data.TIME_PERIOD,
-                Value = data.OBS_VALUE ?? 0.0
-            }).ToList();
-
-            return await _repository.ImportDataInternetUse(InternetUseDataList);
-        }
-        
     }
 }

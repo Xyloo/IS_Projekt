@@ -1,6 +1,6 @@
 ﻿namespace IS_Projekt.Models
 {
-  public class JsonECommerceData
+  public class JsonDataModel
     {
         public string DATAFLOW { get; set; }
         public string LAST_UPDATE { get; set; }
