@@ -2,7 +2,7 @@
 
 namespace IS_Projekt.Models
 {
-    public class Countries
+    public class CountryModel
     {
         [Key]
         public int Id { get; set; }

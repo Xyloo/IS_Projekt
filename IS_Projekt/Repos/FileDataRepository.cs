@@ -40,5 +40,14 @@ namespace IS_Projekt.Repos
         {
             return await _context.Set<T>().ToListAsync();
         }
+
+        public async Task<IEnumerable<CountryModel>> GetCountries()
+        { 
+            return await _context.Countries.ToListAsync();
+        }
+        public async Task<IEnumerable<YearModel>> GetYears()
+        {
+            return await _context.Years.ToListAsync();
+        }
     }
 }

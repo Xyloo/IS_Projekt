@@ -8,13 +8,10 @@ namespace IS_Projekt.Models
     {
         [Key]
         public int Id { get; set; }
-        public int CountryId { get; set; }
-        public int YearId { get; set; }
-
-       // [ForeignKey("CountryId")]
-        //public Countries Country { get; set; }
-        //[ForeignKey("YearId")]
-       // public Years Year { get; set; }
+        [ForeignKey("CountryId")]
+        public CountryModel Country { get; set; }
+        [ForeignKey("YearId")]
+        public YearModel Year { get; set; }
         [Required]
         public string IndividualCriteria { get; set; }
         [Required]

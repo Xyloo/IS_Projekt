@@ -3,6 +3,7 @@ using IS_Projekt.Models;
 using IS_Projekt.Repos;
 using System.Globalization;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace IS_Projekt.Services
 {
@@ -54,29 +55,24 @@ namespace IS_Projekt.Services
 
         public async Task<IEnumerable<T?>> ImportDataFromFile<T>(string path) where T : DataModel, new()
         {
-            var xmlDoc = new XmlDocument();
-            xmlDoc.Load(path);
+            var years = await _xmlRepository.GetYears();
+            var countries = await _xmlRepository.GetCountries();
+            var xmlDoc = XDocument
+                .Load(path)
+                .Root
+                .Elements("row")
+                .Select(x => new T
+                {
+                    IndividualCriteria = x.Element("indic_is")?.Value,
+                    Value = double.Parse(x.Element("OBS_VALUE")?.Value ?? "0.0", CultureInfo.InvariantCulture),
+                    UnitOfMeasure = x.Element("unit")?.Value,
+                    Year = years.FirstOrDefault(y => y.Year == int.Parse(x.Element("TIME_PERIOD")?.Value ?? "0")),
+                    Country = countries.FirstOrDefault(c => c.CountryCode == x.Element("geo")?.Value, countries.Last())
+                })
+                .ToList();
 
-            var dataList = new List<T>();
-            var allObservations = xmlDoc.SelectNodes("//row");
-
-            foreach (XmlNode observation in allObservations!)
-            {
-                var data = new T();
-                // data.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
-                data.IndividualCriteria = GetNodeValue(observation, "indic_is")!;
-                //data.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
-                data.UnitOfMeasure = GetNodeValue(observation, "unit")!;
-                data.Value = double.Parse(GetNodeValue(observation, "OBS_VALUE")!, CultureInfo.InvariantCulture);
-                dataList.Add(data);
-            }
-            return await _xmlRepository.ImportData(dataList);
+            return await _xmlRepository.ImportData(xmlDoc);
         }
 
-        private string? GetNodeValue(XmlNode parentNode, string nodeName)
-        {
-            XmlNode? node = parentNode.SelectSingleNode(nodeName);
-            return node?.InnerText.Trim();
-        }
     }
 }

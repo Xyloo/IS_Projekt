@@ -12,12 +12,9 @@ namespace IS_Projekt.Controllers
     public class XmlController : ControllerBase, IDataController
     {
         private readonly IXmlService _xmlService;
-        private readonly ILogger<XmlController> _logger;
-        public XmlController(IXmlService xmlService, ILogger<XmlController> logger)
+        public XmlController(IXmlService xmlService)
         {
             _xmlService = xmlService;
-            _logger = logger;
-            _logger.LogInformation("XmlController created with service " + xmlService);
         }
 
         [HttpGet("import/internetuse")] //horrible temporary solution just for testing

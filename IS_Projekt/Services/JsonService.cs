@@ -25,13 +25,15 @@ namespace IS_Projekt.Services
         {
             await using var fs = new FileStream(path, FileMode.Open);
             var deserializedData = await System.Text.Json.JsonSerializer.DeserializeAsync<List<JsonDataModel>>(fs);
+            var years = await _repository.GetYears();
+            var countries = await _repository.GetCountries();
 
             var dataList = deserializedData.Select(data => new T
             {
                 IndividualCriteria = data.indic_is,
-                //Country = new Countries(),
+                Country = countries.FirstOrDefault(c => c.CountryCode == data.geo, countries.Last()),
                 UnitOfMeasure = data.unit,
-                //Year = new Years(),
+                Year = years.FirstOrDefault(y => y.Year == data.TIME_PERIOD),
                 Value = data.OBS_VALUE ?? 0.0
             }).ToList();
 
