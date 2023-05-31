@@ -10,54 +10,35 @@ namespace IS_Projekt.Repos
         private readonly ApplicationDbContext _context;
         private readonly ILogger<FileDataRepository> _logger;
 
+        private IEnumerable<T> ReplaceData<T>(IEnumerable<T> parsedData, DbSet<T> dbSet) where T : DataModel
+        {
+            var transaction = _context.Database.BeginTransaction();
+
+            dbSet.RemoveRange(dbSet); //preferably we should just filter parsed data to only include new data
+            _context.SaveChanges();
+
+            dbSet.AddRange(parsedData);
+            var insertedAmount = _context.SaveChanges();
+
+            _logger.LogInformation($"Inserted {insertedAmount} rows into database");
+            transaction.Commit();
+            return parsedData;
+        }
+
         public FileDataRepository(ApplicationDbContext context, ILogger<FileDataRepository> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        public async Task<IEnumerable<DataModel>> ImportData(IEnumerable<DataModel> parsedData)
+        public async Task<IEnumerable<T>> ImportData<T>(IEnumerable<T> parsedData) where T : DataModel
         {
-            var dataType = parsedData.First().DataType; //InternetUse lub ECommerce
-            if (dataType == "ECommerce")
-            {
-                var dbSet = _context.ECommerceData;
-                dbSet.RemoveRange(dbSet); //usuniecie wszystkich danych z bazy
-                await _context.SaveChangesAsync();
-
-                dbSet.AddRange((ECommerce)parsedData);
-                var insertedAmount = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Inserted {insertedAmount} rows into database");
-                return parsedData;
-            }
-            else if (dataType == "InternetUse")
-            {
-                var dbSet = _context.InternetUseData;
-                dbSet.RemoveRange(dbSet); //usuniecie wszystkich danych z bazy
-                await _context.SaveChangesAsync();
-                dbSet.AddRange((InternetUse)parsedData);
-                var insertedAmount = await _context.SaveChangesAsync();
-                _logger.LogInformation($"Inserted {insertedAmount} rows into database");
-                return parsedData;
-            }
-            else
-            {
-                throw new ArgumentException($"Unknown data type: {dataType}");
-            }
-
+            return ReplaceData(parsedData, _context.Set<T>());
         }
 
-        public async Task<IEnumerable<DataModel>> ExportData(DataTypes dataType)
+        public async Task<IEnumerable<T>> ExportData<T>() where T : DataModel
         {
-            if (dataType == DataTypes.ECommerce)
-            {
-                return await _context.ECommerceData.ToListAsync();
-            }
-            else if (dataType == DataTypes.InternetUse)
-            {
-                return await _context.InternetUseData.ToListAsync();
-            }
-            else { throw new ArgumentException($"Unknown data type: {dataType}"); }
+            return await _context.Set<T>().ToListAsync();
         }
     }
 }

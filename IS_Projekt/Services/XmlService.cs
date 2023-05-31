@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace IS_Projekt.Services
 {
-    public class XmlService : IFileService
+    public class XmlService : IXmlService
     {
         private readonly IFileDataRepository _xmlRepository;
 
@@ -15,14 +15,14 @@ namespace IS_Projekt.Services
             _xmlRepository = xmlRepository;
         }
 
-        public async Task ExportDataToFile(string path, DataTypes dataType)
+        public async Task ExportDataToFile<T>(string path) where T : DataModel
         {
             var xmlDocument = new XmlDocument();
             var xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "UTF-8", null);
             var root = xmlDocument.CreateElement("root");
             xmlDocument.InsertBefore(xmlDeclaration, xmlDocument.DocumentElement);
             xmlDocument.AppendChild(root);
-            var data = await _xmlRepository.ExportData(dataType);
+            var data = await _xmlRepository.ExportData<T>();
             foreach ( var item in data)
             {
                 var row = xmlDocument.CreateElement("row");
@@ -52,24 +52,18 @@ namespace IS_Projekt.Services
             xmlDocument.Save(path);
         }
 
-        public async Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType)
+        public async Task<IEnumerable<T?>> ImportDataFromFile<T>(string path) where T : DataModel, new()
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(path);
 
-            var dataList = new List<DataModel>();
+            var dataList = new List<T>();
             var allObservations = xmlDoc.SelectNodes("//row");
 
             foreach (XmlNode observation in allObservations!)
             {
-                var data = new DataModel();
-                data.DataType = dataType switch
-                {
-                    DataTypes.ECommerce => "ECommerce",
-                    DataTypes.InternetUse => "InternetUse",
-                    _ => throw new ArgumentException("Invalid data type")
-                };
-               // data.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
+                var data = new T();
+                // data.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
                 data.IndividualCriteria = GetNodeValue(observation, "indic_is")!;
                 //data.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
                 data.UnitOfMeasure = GetNodeValue(observation, "unit")!;

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace IS_Projekt.Services
 {
-    public class JsonService : IFileService
+    public class JsonService : IJsonService
     {
         public readonly IFileDataRepository _repository;
 
@@ -14,35 +14,28 @@ namespace IS_Projekt.Services
             _repository = jsonRepository;
         }
 
-        public async Task ExportDataToFile(string path, DataTypes dataType)
+        public async Task ExportDataToFile<T>(string path) where T : DataModel
         {
-            var data = await _repository.ExportData(dataType);
+            var data = await _repository.ExportData<T>();
             var jsonString = JsonConvert.SerializeObject(data);
             await File.WriteAllTextAsync(path, jsonString);
         }
 
-        public async Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType)
+        public async Task<IEnumerable<T?>> ImportDataFromFile<T>(string path) where T : DataModel, new()
         {
             await using var fs = new FileStream(path, FileMode.Open);
             var deserializedData = await System.Text.Json.JsonSerializer.DeserializeAsync<List<JsonDataModel>>(fs);
-            var dataT = dataType switch
-            {
-                DataTypes.ECommerce => "ECommerce",
-                DataTypes.InternetUse => "InternetUse",
-                _ => throw new ArgumentException("Invalid data type")
-            };
 
-            var dataList = deserializedData.Select(data => new DataModel
+            var dataList = deserializedData.Select(data => new T
             {
-                DataType = dataT,
                 IndividualCriteria = data.indic_is,
-                //Country = CountryCodes.Countries[data.geo],
+                //Country = new Countries(),
                 UnitOfMeasure = data.unit,
-                //Year = data.TIME_PERIOD,
+                //Year = new Years(),
                 Value = data.OBS_VALUE ?? 0.0
             }).ToList();
 
-            return await _repository.ImportData(dataList);
+            return await _repository.ImportData<T>(dataList);
         }
 
     }

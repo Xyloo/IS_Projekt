@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Net.Mime;
 using IS_Projekt.Extensions;
+using IS_Projekt.Models;
 
 namespace IS_Projekt.Controllers
 {
@@ -10,8 +11,8 @@ namespace IS_Projekt.Controllers
     [Route("api/json")]
     public class JsonController : ControllerBase, IDataController
     {
-        private readonly IFileService _jsonService;
-        public JsonController(IFileService jsonService)
+        private readonly IJsonService _jsonService;
+        public JsonController(IJsonService jsonService)
         {
             _jsonService = jsonService;
         }
@@ -19,14 +20,14 @@ namespace IS_Projekt.Controllers
         [HttpGet("import/ecommerce")] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportECommerce()
         {
-            var data = await _jsonService.ImportDataFromFile("./Resources/ecommerce.json", DataTypes.ECommerce);
+            var data = await _jsonService.ImportDataFromFile<ECommerce>("./Resources/ecommerce.json");
             return Ok(data);
         }
 
         [HttpGet("import/internetuse")] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportInternetUse()
         {
-            var data = await _jsonService.ImportDataFromFile("./Resources/internetuse_raw.json", DataTypes.InternetUse);
+            var data = await _jsonService.ImportDataFromFile<InternetUse>("./Resources/internetuse_raw.json");
             return Ok(data);
         }
 
@@ -35,7 +36,7 @@ namespace IS_Projekt.Controllers
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/ecommerce_download.json");
 
-            await _jsonService.ExportDataToFile(filePath, DataTypes.ECommerce);
+            await _jsonService.ExportDataToFile<ECommerce>(filePath);
 
             if (!System.IO.File.Exists(filePath))
             {
@@ -58,7 +59,7 @@ namespace IS_Projekt.Controllers
         public async Task<IActionResult> ExportInternetUse()
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/internetuse_download.json");
-            await _jsonService.ExportDataToFile(filePath, DataTypes.InternetUse);
+            await _jsonService.ExportDataToFile<InternetUse>(filePath);
 
             if (!System.IO.File.Exists(filePath))
             {
