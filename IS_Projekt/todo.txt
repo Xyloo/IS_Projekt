@@ -38,3 +38,49 @@ json ecommerce mozna zmienic na jakas inna nazwe -> takie same obiekty sa dla je
 
 
 ExportECommerceDataToFile do testa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+transakcje 5p -> dwie transakcje -> wykonuja 2 operacje - kazda transakcja inny poziom izolacji
+
+
+
+-- kontenery aplikacji 2.5p baza danych 2.5p
+
+ eksport/import z bazy danych – 5 pkt -> relacje 
+
+
+
+
+
+
+dwa zrodla danych 4 tabele z danymi przynajmniej i powiazane relacjami
+relacje w danych //ten sam rok kraj relacje  oddzielna tablea dla regionu i roku
+bazad danych 
