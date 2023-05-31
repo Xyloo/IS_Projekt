@@ -28,7 +28,7 @@ namespace IS_Projekt.Services
                 var row = xmlDocument.CreateElement("row");
 
                 var geo = xmlDocument.CreateElement("geo");
-                geo.InnerText = item.Country;
+               // geo.InnerText = item.Country;
                 row.AppendChild(geo);
 
                 var indic_is = xmlDocument.CreateElement("indic_is");
@@ -40,7 +40,7 @@ namespace IS_Projekt.Services
                 row.AppendChild(unit);
 
                 var time_period = xmlDocument.CreateElement("TIME_PERIOD");
-                time_period.InnerText = item.Year.ToString();
+                //time_period.InnerText = item.Year.ToString();
                 row.AppendChild(time_period);
 
                 var obs_value = xmlDocument.CreateElement("OBS_VALUE");
@@ -69,9 +69,9 @@ namespace IS_Projekt.Services
                     DataTypes.InternetUse => "InternetUse",
                     _ => throw new ArgumentException("Invalid data type")
                 };
-                data.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
+               // data.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
                 data.IndividualCriteria = GetNodeValue(observation, "indic_is")!;
-                data.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
+                //data.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
                 data.UnitOfMeasure = GetNodeValue(observation, "unit")!;
                 data.Value = double.Parse(GetNodeValue(observation, "OBS_VALUE")!, CultureInfo.InvariantCulture);
                 dataList.Add(data);

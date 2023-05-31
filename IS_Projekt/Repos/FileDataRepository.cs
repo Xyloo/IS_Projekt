@@ -16,36 +16,48 @@ namespace IS_Projekt.Repos
             _logger = logger;
         }
 
-        public async Task<IEnumerable<DataModel>> ImportData(IEnumerable<DataModel> parsedData) 
+        public async Task<IEnumerable<DataModel>> ImportData(IEnumerable<DataModel> parsedData)
         {
             var dataType = parsedData.First().DataType; //InternetUse lub ECommerce
-            DbSet<DataModel> dbSet = dataType switch
+            if (dataType == "ECommerce")
             {
-                "InternetUse" => _context.InternetUseData,
-                "ECommerce" => _context.ECommerceData,
-                _ => throw new ArgumentException($"Unknown data type: {dataType}")
-            };
+                var dbSet = _context.ECommerceData;
+                dbSet.RemoveRange(dbSet); //usuniecie wszystkich danych z bazy
+                await _context.SaveChangesAsync();
 
-            dbSet.RemoveRange(dbSet); //usuniecie wszystkich danych z bazy
-            await _context.SaveChangesAsync();
-
-            dbSet.AddRange(parsedData);
-            var insertedAmount = await _context.SaveChangesAsync();
-            _logger.LogInformation($"Inserted {insertedAmount} rows into database");
-            return parsedData;
+                dbSet.AddRange((ECommerce)parsedData);
+                var insertedAmount = await _context.SaveChangesAsync();
+                _logger.LogInformation($"Inserted {insertedAmount} rows into database");
+                return parsedData;
+            }
+            else if (dataType == "InternetUse")
+            {
+                var dbSet = _context.InternetUseData;
+                dbSet.RemoveRange(dbSet); //usuniecie wszystkich danych z bazy
+                await _context.SaveChangesAsync();
+                dbSet.AddRange((InternetUse)parsedData);
+                var insertedAmount = await _context.SaveChangesAsync();
+                _logger.LogInformation($"Inserted {insertedAmount} rows into database");
+                return parsedData;
+            }
+            else
+            {
+                throw new ArgumentException($"Unknown data type: {dataType}");
+            }
 
         }
 
         public async Task<IEnumerable<DataModel>> ExportData(DataTypes dataType)
         {
-            DbSet<DataModel> dbSet = dataType switch
+            if (dataType == DataTypes.ECommerce)
             {
-                DataTypes.InternetUse => _context.InternetUseData,
-                DataTypes.ECommerce => _context.ECommerceData,
-                _ => throw new ArgumentException($"Unknown data type: {dataType}")
-            };
-
-            return await dbSet.ToListAsync();
+                return await _context.ECommerceData.ToListAsync();
+            }
+            else if (dataType == DataTypes.InternetUse)
+            {
+                return await _context.InternetUseData.ToListAsync();
+            }
+            else { throw new ArgumentException($"Unknown data type: {dataType}"); }
         }
     }
 }

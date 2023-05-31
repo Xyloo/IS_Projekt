@@ -36,9 +36,9 @@ namespace IS_Projekt.Services
             {
                 DataType = dataT,
                 IndividualCriteria = data.indic_is,
-                Country = CountryCodes.Countries[data.geo],
+                //Country = CountryCodes.Countries[data.geo],
                 UnitOfMeasure = data.unit,
-                Year = data.TIME_PERIOD,
+                //Year = data.TIME_PERIOD,
                 Value = data.OBS_VALUE ?? 0.0
             }).ToList();
 
