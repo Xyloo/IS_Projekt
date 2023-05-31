@@ -6,6 +6,8 @@ VIEW -> SQL Server Object Explorer ->
 	name localhost,1433 
 	password !root123456
 
+dodać eksport do XMLa
+
 
 //createusercontroller sprawdz najpierw czy uzytkownik istnieje
 //dodaj utoryzacje na rozne getuser getusers

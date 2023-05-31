@@ -35,6 +35,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\ECommerce.cs" />
+    <Compile Remove="Models\JsonECommerceData.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Models\DataModel" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Resources\internet_use.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

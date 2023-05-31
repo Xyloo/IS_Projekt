@@ -2,10 +2,11 @@
 using IS_Projekt.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using IS_Projekt.Extensions;
 
 namespace IS_Projekt.Services
 {
-    public class SqlService : ISqlService
+    public class SqlService : IFileService
     {
         private readonly ApplicationDbContext _dbcontext;
 
@@ -14,7 +15,8 @@ namespace IS_Projekt.Services
             _dbcontext = db;
         }
 
-        public async Task ExportECommerceDataToFile(string path)
+        //incomplete, consider both tables
+        public async Task ExportDataToFile(string path, DataTypes dataType)
         {
             var data = await _dbcontext.ECommerceData.ToListAsync();
             StringBuilder sb = new StringBuilder();
@@ -40,16 +42,12 @@ namespace IS_Projekt.Services
             await File.WriteAllTextAsync(path, sb.ToString());
         }
 
-        public async Task ImportECommerceDataFromFile(string path)
+        public async Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType)
         {
+            //we really need some validation here
             var sqlCommands = await File.ReadAllTextAsync(path);
             await _dbcontext.Database.ExecuteSqlRawAsync(sqlCommands);
-        }
-
-        public async Task ImportInternetUseDataFromFile(string path)
-        {
-            var sqlCommands = await File.ReadAllTextAsync(path);
-            await _dbcontext.Database.ExecuteSqlRawAsync(sqlCommands);
+            return null;
         }
     }
 }

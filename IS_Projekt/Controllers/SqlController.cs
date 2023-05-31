@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Net.Mime;
+using IS_Projekt.Extensions;
 
 namespace IS_Projekt.Controllers
 {
@@ -9,8 +10,8 @@ namespace IS_Projekt.Controllers
     [Route("api/sql")]
     public class SqlController : ControllerBase
     {
-        private readonly ISqlService _sqlService;
-        public SqlController(ISqlService sqlService)
+        private readonly IFileService _sqlService;
+        public SqlController(IFileService sqlService)
         {
             _sqlService = sqlService;
         }
@@ -18,14 +19,14 @@ namespace IS_Projekt.Controllers
         [HttpGet("import/ecommerce")] 
         public async Task<IActionResult> ImportECommerce()
         {
-            await _sqlService.ImportECommerceDataFromFile("./Resources/ECommerce_sql.sql");
+            await _sqlService.ImportDataFromFile("./Resources/ECommerce_sql.sql", DataTypes.ECommerce);
             return Ok();
         }
 
         [HttpGet("import/internetuse")] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportInternetUse()
         {
-            await _sqlService.ImportInternetUseDataFromFile("./Resources/InternetUse_sql.sql");
+            await _sqlService.ImportDataFromFile("./Resources/InternetUse_sql.sql", DataTypes.InternetUse);
             return Ok();
         }
 
@@ -33,7 +34,7 @@ namespace IS_Projekt.Controllers
         public async Task<IActionResult> ExportECommerce()
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/ecommerce_sql.txt");
-            await _sqlService.ExportECommerceDataToFile(filePath);
+            await _sqlService.ImportDataFromFile(filePath, DataTypes.ECommerce);
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound();
@@ -52,7 +53,7 @@ namespace IS_Projekt.Controllers
         public async Task<IActionResult> ExportInternetUse()
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/internetuse_sql.txt");
-            await _sqlService.ExportInternetUseDataToFile(filePath);
+            await _sqlService.ImportDataFromFile(filePath, DataTypes.InternetUse);
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound();
