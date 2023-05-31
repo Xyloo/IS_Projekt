@@ -1,8 +1,6 @@
-﻿using IS_Projekt.Extensions;
-using IS_Projekt.Models;
+﻿using IS_Projekt.Models;
 using IS_Projekt.Repos;
 using System.Globalization;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace IS_Projekt.Services
@@ -10,47 +8,32 @@ namespace IS_Projekt.Services
     public class XmlService : IXmlService
     {
         private readonly IFileDataRepository _xmlRepository;
+        private readonly ILogger<XmlService> _logger;
 
-        public XmlService(IFileDataRepository xmlRepository)
+        public XmlService(IFileDataRepository xmlRepository, ILogger<XmlService> logger)
         {
             _xmlRepository = xmlRepository;
+            _logger = logger;
         }
 
         public async Task ExportDataToFile<T>(string path) where T : DataModel
         {
-            var xmlDocument = new XmlDocument();
-            var xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "UTF-8", null);
-            var root = xmlDocument.CreateElement("root");
-            xmlDocument.InsertBefore(xmlDeclaration, xmlDocument.DocumentElement);
-            xmlDocument.AppendChild(root);
             var data = await _xmlRepository.ExportData<T>();
-            foreach ( var item in data)
-            {
-                var row = xmlDocument.CreateElement("row");
+            _logger.LogInformation($"Exporting {data.Count()} rows to file {path}");
+            _logger.LogInformation($"Type: {typeof(T)}");
+            var first = data.First();
 
-                var geo = xmlDocument.CreateElement("geo");
-               // geo.InnerText = item.Country;
-                row.AppendChild(geo);
-
-                var indic_is = xmlDocument.CreateElement("indic_is");
-                indic_is.InnerText = item.IndividualCriteria;
-                row.AppendChild(indic_is);
-
-                var unit = xmlDocument.CreateElement("unit");
-                unit.InnerText = item.UnitOfMeasure;
-                row.AppendChild(unit);
-
-                var time_period = xmlDocument.CreateElement("TIME_PERIOD");
-                //time_period.InnerText = item.Year.ToString();
-                row.AppendChild(time_period);
-
-                var obs_value = xmlDocument.CreateElement("OBS_VALUE");
-                obs_value.InnerText = item.Value.ToString(CultureInfo.InvariantCulture);
-                row.AppendChild(obs_value);
-
-                root.AppendChild(row);
-            }
-            xmlDocument.Save(path);
+            var xml = new XDocument(
+                new XElement("root",
+                    data.Select(dm => new XElement("row",
+                        new XElement("TIME_PERIOD", dm.Year.Year),
+                        new XElement("geo", dm.Country.CountryCode),
+                        new XElement("unit", dm.UnitOfMeasure),
+                        new XElement("OBS_VALUE", dm.Value),
+                        new XElement("indic_is", dm.IndividualCriteria)
+                    ))
+                ));
+            xml.Save(path);
         }
 
         public async Task<IEnumerable<T?>> ImportDataFromFile<T>(string path) where T : DataModel, new()
@@ -73,6 +56,5 @@ namespace IS_Projekt.Services
 
             return await _xmlRepository.ImportData(xmlDoc);
         }
-
     }
 }

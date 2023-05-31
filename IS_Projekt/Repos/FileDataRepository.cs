@@ -38,7 +38,7 @@ namespace IS_Projekt.Repos
 
         public async Task<IEnumerable<T>> ExportData<T>() where T : DataModel
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().Include(x => x.Country).Include(x => x.Year).ToListAsync();
         }
 
         public async Task<IEnumerable<CountryModel>> GetCountries()
