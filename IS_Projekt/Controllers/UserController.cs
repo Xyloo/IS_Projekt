@@ -31,6 +31,21 @@ namespace IS_Projekt.Controllers
             return Ok();
         }
 
+        //create function for register
+        public async Task<IActionResult> Register(CreateUserDto userDto) {
+            User user = new User() {
+                Username = userDto.Username,
+                Password = userDto.Password,
+                Role = "user"
+            };
+
+            var userCreate = await _userService.CreateUser(userDto.Username, userDto.Password);
+            if(userCreate == null) {
+                return BadRequest(new { message = "Username already exists" });
+            }
+            string token = _userService.GenerateToken(user);
+            return Ok(new {token});
+        }
 
 
     }
