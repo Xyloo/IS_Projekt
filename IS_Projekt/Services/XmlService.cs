@@ -1,88 +1,60 @@
-﻿using IS_Projekt.Extensions;
-using IS_Projekt.Models;
+﻿using IS_Projekt.Models;
 using IS_Projekt.Repos;
 using System.Globalization;
-using System.Xml;
+using System.Xml.Linq;
 
 namespace IS_Projekt.Services
 {
-    public class XmlService : IFileService
+    public class XmlService : IXmlService
     {
         private readonly IFileDataRepository _xmlRepository;
+        private readonly ILogger<XmlService> _logger;
 
-        public XmlService(IFileDataRepository xmlRepository)
+        public XmlService(IFileDataRepository xmlRepository, ILogger<XmlService> logger)
         {
             _xmlRepository = xmlRepository;
+            _logger = logger;
         }
 
-        public async Task ExportDataToFile(string path, DataTypes dataType)
+        public async Task ExportDataToFile<T>(string path) where T : DataModel
         {
-            var xmlDocument = new XmlDocument();
-            var xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "UTF-8", null);
-            var root = xmlDocument.CreateElement("root");
-            xmlDocument.InsertBefore(xmlDeclaration, xmlDocument.DocumentElement);
-            xmlDocument.AppendChild(root);
-            var data = await _xmlRepository.ExportData(dataType);
-            foreach ( var item in data)
-            {
-                var row = xmlDocument.CreateElement("row");
+            var data = await _xmlRepository.ExportData<T>();
+            _logger.LogInformation($"Exporting {data.Count()} rows to file {path}");
+            _logger.LogInformation($"Type: {typeof(T)}");
+            var first = data.First();
 
-                var geo = xmlDocument.CreateElement("geo");
-                geo.InnerText = item.Country;
-                row.AppendChild(geo);
-
-                var indic_is = xmlDocument.CreateElement("indic_is");
-                indic_is.InnerText = item.IndividualCriteria;
-                row.AppendChild(indic_is);
-
-                var unit = xmlDocument.CreateElement("unit");
-                unit.InnerText = item.UnitOfMeasure;
-                row.AppendChild(unit);
-
-                var time_period = xmlDocument.CreateElement("TIME_PERIOD");
-                time_period.InnerText = item.Year.ToString();
-                row.AppendChild(time_period);
-
-                var obs_value = xmlDocument.CreateElement("OBS_VALUE");
-                obs_value.InnerText = item.Value.ToString(CultureInfo.InvariantCulture);
-                row.AppendChild(obs_value);
-
-                root.AppendChild(row);
-            }
-            xmlDocument.Save(path);
+            var xml = new XDocument(
+                new XElement("root",
+                    data.Select(dm => new XElement("row",
+                        new XElement("TIME_PERIOD", dm.Year.Year),
+                        new XElement("geo", dm.Country.CountryCode),
+                        new XElement("unit", dm.UnitOfMeasure),
+                        new XElement("OBS_VALUE", dm.Value),
+                        new XElement("indic_is", dm.IndividualCriteria)
+                    ))
+                ));
+            xml.Save(path);
         }
 
-        public async Task<IEnumerable<DataModel?>> ImportDataFromFile(string path, DataTypes dataType)
+        public async Task<IEnumerable<T?>> ImportDataFromFile<T>(string path) where T : DataModel, new()
         {
-            var xmlDoc = new XmlDocument();
-            xmlDoc.Load(path);
-
-            var dataList = new List<DataModel>();
-            var allObservations = xmlDoc.SelectNodes("//row");
-
-            foreach (XmlNode observation in allObservations!)
-            {
-                var data = new DataModel();
-                data.DataType = dataType switch
+            var years = await _xmlRepository.GetYears();
+            var countries = await _xmlRepository.GetCountries();
+            var xmlDoc = XDocument
+                .Load(path)
+                .Root
+                .Elements("row")
+                .Select(x => new T
                 {
-                    DataTypes.ECommerce => "ECommerce",
-                    DataTypes.InternetUse => "InternetUse",
-                    _ => throw new ArgumentException("Invalid data type")
-                };
-                data.Country = CountryCodes.Countries[GetNodeValue(observation, "geo")!];
-                data.IndividualCriteria = GetNodeValue(observation, "indic_is")!;
-                data.Year = int.Parse(GetNodeValue(observation, "TIME_PERIOD")!);
-                data.UnitOfMeasure = GetNodeValue(observation, "unit")!;
-                data.Value = double.Parse(GetNodeValue(observation, "OBS_VALUE")!, CultureInfo.InvariantCulture);
-                dataList.Add(data);
-            }
-            return await _xmlRepository.ImportData(dataList);
-        }
+                    IndividualCriteria = x.Element("indic_is")?.Value,
+                    Value = double.Parse(x.Element("OBS_VALUE")?.Value ?? "0.0", CultureInfo.InvariantCulture),
+                    UnitOfMeasure = x.Element("unit")?.Value,
+                    Year = years.FirstOrDefault(y => y.Year == int.Parse(x.Element("TIME_PERIOD")?.Value ?? "0")),
+                    Country = countries.FirstOrDefault(c => c.CountryCode == x.Element("geo")?.Value, countries.Last())
+                })
+                .ToList();
 
-        private string? GetNodeValue(XmlNode parentNode, string nodeName)
-        {
-            XmlNode? node = parentNode.SelectSingleNode(nodeName);
-            return node?.InnerText.Trim();
+            return await _xmlRepository.ImportData(xmlDoc);
         }
     }
 }

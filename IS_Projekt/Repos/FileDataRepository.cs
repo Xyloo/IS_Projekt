@@ -10,42 +10,44 @@ namespace IS_Projekt.Repos
         private readonly ApplicationDbContext _context;
         private readonly ILogger<FileDataRepository> _logger;
 
+        private IEnumerable<T> ReplaceData<T>(IEnumerable<T> parsedData, DbSet<T> dbSet) where T : DataModel
+        {
+            var transaction = _context.Database.BeginTransaction();
+
+            dbSet.RemoveRange(dbSet); //preferably we should just filter parsed data to only include new data
+            _context.SaveChanges();
+
+            dbSet.AddRange(parsedData);
+            var insertedAmount = _context.SaveChanges();
+
+            _logger.LogInformation($"Inserted {insertedAmount} rows into database");
+            transaction.Commit();
+            return parsedData;
+        }
+
         public FileDataRepository(ApplicationDbContext context, ILogger<FileDataRepository> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        public async Task<IEnumerable<DataModel>> ImportData(IEnumerable<DataModel> parsedData) 
+        public async Task<IEnumerable<T>> ImportData<T>(IEnumerable<T> parsedData) where T : DataModel
         {
-            var dataType = parsedData.First().DataType; //InternetUse lub ECommerce
-            DbSet<DataModel> dbSet = dataType switch
-            {
-                "InternetUse" => _context.InternetUseData,
-                "ECommerce" => _context.ECommerceData,
-                _ => throw new ArgumentException($"Unknown data type: {dataType}")
-            };
-
-            dbSet.RemoveRange(dbSet); //usuniecie wszystkich danych z bazy
-            await _context.SaveChangesAsync();
-
-            dbSet.AddRange(parsedData);
-            var insertedAmount = await _context.SaveChangesAsync();
-            _logger.LogInformation($"Inserted {insertedAmount} rows into database");
-            return parsedData;
-
+            return ReplaceData(parsedData, _context.Set<T>());
         }
 
-        public async Task<IEnumerable<DataModel>> ExportData(DataTypes dataType)
+        public async Task<IEnumerable<T>> ExportData<T>() where T : DataModel
         {
-            DbSet<DataModel> dbSet = dataType switch
-            {
-                DataTypes.InternetUse => _context.InternetUseData,
-                DataTypes.ECommerce => _context.ECommerceData,
-                _ => throw new ArgumentException($"Unknown data type: {dataType}")
-            };
+            return await _context.Set<T>().Include(x => x.Country).Include(x => x.Year).ToListAsync();
+        }
 
-            return await dbSet.ToListAsync();
+        public async Task<IEnumerable<CountryModel>> GetCountries()
+        { 
+            return await _context.Countries.ToListAsync();
+        }
+        public async Task<IEnumerable<YearModel>> GetYears()
+        {
+            return await _context.Years.ToListAsync();
         }
     }
 }
