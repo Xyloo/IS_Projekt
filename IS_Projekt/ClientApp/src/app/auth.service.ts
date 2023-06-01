@@ -9,7 +9,7 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string) {
-    return this.http.post(`/api/auth/login`, { username, password })
+    return this.http.post(`/api/users/login`, { username, password })
       .pipe(user => {
         if (user) {
           localStorage.setItem('currentUser', JSON.stringify(user));
@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   register(user: any) {
-    return this.http.post('/api/auth/register', user);
+    return this.http.post('/api/users/register', user);
   }
 
 }

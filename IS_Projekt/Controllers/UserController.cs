@@ -32,6 +32,7 @@ namespace IS_Projekt.Controllers
         }
 
         //create function for register
+        [HttpPost("register")]
         public async Task<IActionResult> Register(CreateUserDto userDto) {
             User user = new User() {
                 Username = userDto.Username,
