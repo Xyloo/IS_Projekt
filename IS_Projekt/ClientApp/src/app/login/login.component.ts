@@ -9,16 +9,28 @@ import { AuthService } from '../auth.service'
 })
 export class LoginComponent {
 
-  username = '';
-  password = '';
+    username = '';
+    email = '';
+    password = '';
+    message = '';
+    isError = false;
+
 
   constructor(private authService: AuthService, private router: Router) { }
 
 
   login() {
-    this.authService.login(this.username, this.password).subscribe(response => {
-      // handle response here
-    });
+    this.authService.login(this.username, this.password).subscribe((response: any) => {
+
+      setTimeout(() => this.router.navigate(['/']), 1000);
+    },
+      (error: any) => { // Error callback
+
+        this.message = error.message;
+        this.isError = true;
+
+        console.error(error.message);
+      });
 
   }
 }
