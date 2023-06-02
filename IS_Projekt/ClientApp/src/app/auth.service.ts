@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,30 +10,16 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http.post(`/api/users/login`, { username, password })
-      .pipe(
-        map((response: any) => {
-          // save token in local storage if it exists
-          if (response && response.token) {
-            localStorage.setItem('currentUser', JSON.stringify(response.token));
-          }
-          return response;
-        }),
-        catchError(this.handleError)  // error handling
-      );
+      .pipe(user => {
+        if (user) {
+          localStorage.setItem('currentUser', JSON.stringify(user));
+        }
+        return user;
+      })
   }
-
 
   register(user: any) {
     return this.http.post('/api/users/register', user);
-    catchError(this.handleError)
   }
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'Unknown error!';
-    if (error.status === 409 || error.status === 401) {
-      errorMessage = error.error.message
-      console.log(error.error);
-    } 
-    // Handle different HTTP error statuses here...
-    return throwError(errorMessage);
-  }
+
 }

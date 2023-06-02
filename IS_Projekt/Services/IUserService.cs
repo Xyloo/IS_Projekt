@@ -4,9 +4,8 @@ namespace IS_Projekt.Services
 {
     public interface IUserService
     {
-        Task<User?> CreateUser(User userData);
+        Task<User?> CreateUser(string username, string password);
         string GenerateToken(User user);
-        Task<User?> GetUserByUsername(string username);
         Task<IEnumerable<User>> GetUsers();
         bool VerifyPassword(User user, string providedPassword);
     }

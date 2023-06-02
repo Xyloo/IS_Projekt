@@ -1,5 +1,4 @@
-﻿using IS_Projekt.Exceptions;
-using IS_Projekt.Extensions;
+﻿using IS_Projekt.Extensions;
 using IS_Projekt.Models;
 using IS_Projekt.Repos;
 using Microsoft.AspNetCore.Identity;
@@ -25,19 +24,14 @@ namespace IS_Projekt.Services
         }
 
 
-        public async Task<User?> CreateUser(User userData)
+        public async Task<User?> CreateUser(string username, string password)
         {
-            var userExists = await _userRepository.GetUserByUsername(userData.Username);
-            var userExistsEmail = await _userRepository.GetUserByEmail(userData.Email);
+            var userExists = await _userRepository.GetUserByUsername(username);
             if (userExists != null) //if user exists, we can't create a new one
-                throw new UsernameExistsException();
-            if (userExistsEmail != null)
-                throw new EmailExistsException();
-
+                return null;
             var user = new User();
-            user.Username = userData.Username;
-            user.Password = _passwordHasher.HashPassword(user, userData.Password);
-            user.Email = userData.Email;
+            user.Username = username;
+            user.Password = _passwordHasher.HashPassword(user, password);
             user.Role = "user";
             await _userRepository.CreateUser(user);
             return user;
@@ -84,9 +78,6 @@ namespace IS_Projekt.Services
             return tokenHandler.WriteToken(token);
         }
         
-        public async Task<User?> GetUserByUsername(string username)
-        {
-            return await _userRepository.GetUserByUsername(username);
-        }
+        
     }
 }

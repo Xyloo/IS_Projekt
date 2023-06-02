@@ -8,7 +8,6 @@ namespace IS_Projekt.Repos
         Task DeleteUser(int id);
         Task<User?> GetUser(int id);
         Task<User?> GetUserByUsername(string username);
-        Task<User?> GetUserByEmail(string email);
         Task<IEnumerable<User>> GetUsers();
         Task<User> UpdateUser(User user);
     }
