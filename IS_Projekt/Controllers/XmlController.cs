@@ -9,7 +9,7 @@ namespace IS_Projekt.Controllers
 {
     [ApiController]
     [Route("api/xml")]
-    public class XmlController : ControllerBase, IDataController
+    public class XmlController : ControllerBase, IDataFileController
     {
         private readonly IXmlService _xmlService;
         private readonly ILogger<XmlController> _logger;
