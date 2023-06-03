@@ -1,0 +1,37 @@
+<div class="select-container">
+  <h1 class="text-white">Select Filters:</h1>
+  <div class="dataSelect">
+    <div class="selectWrap">
+      <p class="select-label"> Select Year:</p>
+      <select [(ngModel)]="selectedYears" multiple>
+        <option *ngFor="let year of years" [value]="year">{{year}}</option>
+      </select>
+    </div>
+    <div class="selectWrap">
+      <p class="select-label"> Select Country:</p>
+      <select [(ngModel)]="selectedCountries" multiple>
+        <option *ngFor="let country of countries" [value]="country">{{country}}</option>
+      </select>
+    </div>
+    <div class="selectWrap">
+      <p class="select-label"> Select ECommerce criteria:</p>
+      <select [(ngModel)]="selectedIC_EC" multiple>
+        <option *ngFor="let criterion of IC_ECommerce" [value]="criterion">{{criterion}}</option>
+      </select>
+    </div>
+    <div class="selectWrap">
+      <p class="select-label"> Select InternetUse criteria:</p>
+      <select [(ngModel)]="selectedIC_IU" multiple>
+        <option *ngFor="let criterion of IC_InternetUse" [value]="criterion">{{criterion}}</option>
+      </select>
+    </div>
+  </div>
+  <button (click)="createChart()">Create graph</button>
+</div>
+
+
+<div [hidden]="isHidden" class="chart-container">
+  <p class="chart-label">Simple Chart</p>
+  <button class="delete-button" (click)="deleteChart()">X</button>
+  <canvas id="MyChart">{{ chart }}</canvas>
+</div>
