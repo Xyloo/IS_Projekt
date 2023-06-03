@@ -14,6 +14,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IFileDataRepository, FileDataRepository>();
+builder.Services.AddScoped<IDataRepository, DataRepository>();
 
 builder.Services.AddScoped<IXmlService, XmlService>();
 builder.Services.AddScoped<IJsonService, JsonService>();
