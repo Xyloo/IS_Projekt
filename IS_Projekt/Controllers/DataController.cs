@@ -136,5 +136,19 @@ namespace IS_Projekt.Controllers
             return BadRequest();
         }
 
+        [HttpGet("info")]
+        public async Task<IActionResult> GetDataInfo()
+        {
+            try
+            {
+                var dataInfo = await _dataRepository.GetDataInfo();
+                return Ok(dataInfo);
+
+            }catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
     }
 }
