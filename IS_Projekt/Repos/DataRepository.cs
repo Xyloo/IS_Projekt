@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics.Metrics;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.VisualBasic;
 
 namespace IS_Projekt.Repos {
     public class DataRepository: IDataRepository {
@@ -153,6 +155,30 @@ namespace IS_Projekt.Repos {
                                       Value = data.Value
                                   })
                                   .ToListAsync();
+        }
+
+        public async Task<DataInfoDto> GetDataInfo()
+        {
+           var countries = await _context.Countries.Select(x => x.CountryName).Distinct().ToListAsync();
+           var years = await _context.Years.Select(x => x.Year).Distinct().ToListAsync();
+
+           var IC_ECommerce = await _context.ECommerceData
+                                             .Select(x => x.IndividualCriteria)
+                                             .Distinct()
+                                             .ToListAsync();
+           var IC_InternetUse = await _context.InternetUseData
+                                             .Select(x => x.IndividualCriteria)
+                                             .Distinct()
+                                             .ToListAsync();
+            var DataInfo = new DataInfoDto
+            {
+                Years = years,
+                Countries = countries,
+                IC_ECommerce = IC_ECommerce,
+                IC_InternetUse = IC_InternetUse
+            };
+
+            return DataInfo;
         }
     }
 }

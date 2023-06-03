@@ -11,5 +11,7 @@ namespace IS_Projekt.Repos {
         Task<T> DeleteData<T>(int id) where T: DataModel;
         Task<T> UpdateData<T>(DataModelDto dataDto, int id) where T: DataModel;
         Task<IEnumerable<DataModelDto>> GetFilteredData<T>(FilterCriteria filter) where T: DataModel;
+        Task<DataInfoDto> GetDataInfo();
+
     }
 }
