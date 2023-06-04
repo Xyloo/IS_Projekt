@@ -19,19 +19,53 @@ namespace IS_Projekt.Controllers
             _logger = logger;
         }
 
-        [HttpGet("import/internetuse")] //horrible temporary solution just for testing
-        public async Task<IActionResult> ImportInternetUse()
+        [HttpPost("import/internetuse")] //horrible temporary solution just for testing
+        public async Task<IActionResult> ImportInternetUse(IFormFile file)
         {
-            var xml = await _xmlService.ImportDataFromFile<InternetUse>("./Resources/internet_use.xml");
-            return Ok(xml);
+            try
+            {
+                if (file == null)
+                {
+                    return BadRequest();
+                }
+                string filePath = "./Resources/internetuse.xml";
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+                var data = await _xmlService.ImportDataFromFile<InternetUse>(filePath);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.StackTrace);
+            }
         }
 
-        [HttpGet("import/ecommerce")] //horrible temporary solution just for testing
-        public async Task<IActionResult> ImportECommerce()
+        [HttpPost("import/ecommerce")] //horrible temporary solution just for testing
+        public async Task<IActionResult> ImportECommerce(IFormFile file)
         {
-            var xml = await _xmlService.ImportDataFromFile<ECommerce>("./Resources/ecommerce.xml");
-            return Ok(xml);
+            try
+            {
+                if (file == null)
+                {
+                    return BadRequest();
+                }
+
+                string filePath = "./Resources/ecommerce.xml";
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+                var data = await _xmlService.ImportDataFromFile<ECommerce>(filePath);
+                return Ok();
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.StackTrace);
+            }
         }
+
+
 
         [HttpGet("export/ecommerce")]
         public async Task<IActionResult> ExportECommerce()
