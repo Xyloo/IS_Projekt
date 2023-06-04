@@ -9,14 +9,14 @@ namespace IS_Projekt.Dtos
        [Key]
        public int Id { get; set; }
        [Required]
-       public string Country { get; set; }
+       public string? Country { get; set; }
        [Required]
-       public int Year { get; set; }
+       public int? Year { get; set; }
        [Required]
-       public string IndividualCriteria { get; set; }
+       public string? IndividualCriteria { get; set; }
        [Required]
-       public string UnitOfMeasure { get; set; }
+       public string? UnitOfMeasure { get; set; }
        [Required]
-       public double Value { get; set; }
+       public double? Value { get; set; }
     }
 }

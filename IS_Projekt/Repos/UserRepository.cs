@@ -18,7 +18,7 @@ namespace IS_Projekt.Repos
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<User> GetUserByEmail(string Email)
+        public async Task<User?> GetUserByEmail(string Email)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == Email);
         }
