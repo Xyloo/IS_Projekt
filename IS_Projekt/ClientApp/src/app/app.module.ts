@@ -9,13 +9,14 @@ import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { LoadingAnimationComponent } from './loading-animation/loading-animation.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { MainGraphComponent } from './main-graph/main-graph.component';
+import { AuthGuard } from './auth-guard.service';
+import { DataIEComponent } from './data-ie/data-ie.component';
+
 
 
 @NgModule({
@@ -23,13 +24,12 @@ import { MainGraphComponent } from './main-graph/main-graph.component';
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
     LoginComponent,
     RegisterComponent,
     LoadingAnimationComponent,
     MainGraphComponent,
-    MainPageComponent
+    MainPageComponent,
+    DataIEComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -39,11 +39,11 @@ import { MainGraphComponent } from './main-graph/main-graph.component';
     CommonModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'home', component: MainGraphComponent }
+      { path: 'dataie', component: DataIEComponent }, //, canActivate: [AuthGuard] },
+      { path: 'users', component: DataIEComponent, canActivate: [AuthGuard] },
+      { path: 'home', component: MainGraphComponent, canActivate:[AuthGuard] }
     ])
   ],
   providers: [],

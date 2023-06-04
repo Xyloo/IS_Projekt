@@ -23,7 +23,7 @@ body {
 }
 
 .card-header {
-  background-color: #1e90ff;
+  background-color: rgb(155, 76, 255);
   color: white;
   font-size: 20px;
   font-weight: bold;
@@ -31,8 +31,9 @@ body {
 }
 
 .btn-primary {
-  background-color: #1e90ff;
+  background-color: rgb(155, 76, 255);
 }
+
 
 .alert {
   border-radius: 15px;
