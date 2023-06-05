@@ -54,6 +54,8 @@ ExportECommerceDataToFile do testa
 
 
 transakcje 5p -> dwie transakcje -> wykonuja 2 operacje - kazda transakcja inny poziom izolacji
+jedna jest w CreateUser w UserRepository (serializable)
+druga DataRepository w ReplaceData (repeatable read) // funkcja helper
 
 
 

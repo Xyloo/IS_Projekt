@@ -21,7 +21,7 @@
     </div>
     <div class="selectWrap">
       <p class="select-label"> Select InternetUse criteria:</p>
-      <select [(ngModel)]="selectedIC_IU" multiple>
+      <select [(ngModel)]="selectedIC_IU" multiple style="min-height: 20%">
         <option *ngFor="let criterion of IC_InternetUse" [value]="criterion">{{criterion}}</option>
       </select>
     </div>
@@ -31,7 +31,7 @@
 
 
 <div [hidden]="isHidden" class="chart-container">
-  <p class="chart-label">Simple Chart</p>
+  <p class="chart-label">Chart</p>
   <button class="delete-button" (click)="deleteChart()">X</button>
   <canvas id="MyChart">{{ chart }}</canvas>
 </div>

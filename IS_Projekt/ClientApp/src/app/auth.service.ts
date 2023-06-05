@@ -7,7 +7,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 })
 export class AuthService {
 
-  isLogged = false;
+  isLoggedIn = false;
 
   constructor(private http: HttpClient) { }
 
@@ -19,7 +19,7 @@ export class AuthService {
           if (response && response.token) {
             localStorage.setItem('currentUser', response.token);
           }
-          this.isLogged = true;
+          this.isLoggedIn = true;
           return response;
         }),
         catchError(this.handleError)  // error handling
@@ -43,12 +43,9 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('currentUser');
-    this.isLogged = false;
+    this.isLoggedIn = false;
   }
 
-  isLoggedIn() {
-    return this.isLogged;
-  }
 
   getToken() {
     let token = localStorage.getItem("currentUser");

@@ -12,6 +12,7 @@ namespace IS_Projekt.Repos
 
         private IEnumerable<T> ReplaceData<T>(IEnumerable<T> parsedData, DbSet<T> dbSet) where T : DataModel
         {
+            _context.Database.ExecuteSqlRaw("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;");
             var transaction = _context.Database.BeginTransaction();
 
             dbSet.RemoveRange(dbSet); //preferably we should just filter parsed data to only include new data

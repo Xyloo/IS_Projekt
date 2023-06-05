@@ -42,7 +42,7 @@ export class DataIEComponent {
 
       } else {
         // Invalid file extension
-        console.log('Invalid file type. Please choose a JSON or XML file.');
+        window.alert('Invalid file type. Please choose a JSON or XML file.');
         this.selectedFileName = null;
       }
     } else {
@@ -69,7 +69,7 @@ export class DataIEComponent {
           const percentDone = Math.round(100 * event.loaded / event.total!);
           console.log(`File is ${percentDone}% uploaded.`);
         } else if (event instanceof HttpResponse) {
-          console.log('File is completely uploaded!');
+          window.alert('File is completely uploaded!');
         }
       },
         error => {
@@ -78,7 +78,7 @@ export class DataIEComponent {
             // Handle unauthorized error here
             window.alert('You are unauthorized to upload the file.');
           } else {
-            console.error('An error occurred while uploading the file.', error);
+            window.alert('An error occurred while uploading the file.' + error);
           }
         });
 
@@ -105,8 +105,8 @@ export class DataIEComponent {
           
           window.alert('You are unauthorized.');
         } else {
-          
-          console.error('An error occurred while downloading the file.', error);
+
+          window.alert('An error occurred while downloading the file.' + error);
         }
       }
     );

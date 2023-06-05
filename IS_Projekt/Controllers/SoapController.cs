@@ -61,7 +61,7 @@ namespace IS_Projekt.Controllers
         }
 
         [HttpPost("{dataType}")]
-        public async Task<SoapResponse<DataModel?>> AddData(DataModelDto dataDto, string dataType) //untested
+        public async Task<SoapResponse<DataModel?>> AddData(DataModelDto dataDto, string dataType) //tested
         {
             try
             {
