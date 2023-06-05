@@ -38,7 +38,7 @@ namespace IS_Projekt.Services
             user.Username = userData.Username;
             user.Password = _passwordHasher.HashPassword(user, userData.Password);
             user.Email = userData.Email;
-            user.Role = "user";
+            user.Role = userData.Role;
             await _userRepository.CreateUser(user);
             return user;
         }
@@ -68,11 +68,11 @@ namespace IS_Projekt.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtKey);
-            string[] roles = user.Role.Split(", ");  //roles in string - separated by ", "
+            string[] roles = user.Role.Split(",");  //roles in string - separated by ", "
             var claims = new List<Claim>();
             foreach (var role in roles)
             {
-                new Claim(ClaimTypes.Role, role);
+                claims.Add(new Claim(ClaimTypes.Role, role.Trim()));
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor

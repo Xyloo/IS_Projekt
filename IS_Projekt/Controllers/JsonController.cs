@@ -4,6 +4,8 @@ using Microsoft.Net.Http.Headers;
 using System.Net.Mime;
 using IS_Projekt.Extensions;
 using IS_Projekt.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace IS_Projekt.Controllers
 {
@@ -16,19 +18,45 @@ namespace IS_Projekt.Controllers
         {
             _jsonService = jsonService;
         }
-
-        [HttpGet("import/ecommerce")] //horrible temporary solution just for testing
-        public async Task<IActionResult> ImportECommerce()
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("import/ecommerce")] //horrible temporary solution just for testing
+        public async Task<IActionResult> ImportECommerce(IFormFile file)
         {
-            var data = await _jsonService.ImportDataFromFile<ECommerce>("./Resources/ecommerce.json");
-            return Ok(data);
+            if (file == null)
+            {
+                return BadRequest();
+            }
+
+            string filePath = "./Resources/ecommerce.json";
+
+            //saving file
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            var data = await _jsonService.ImportDataFromFile<ECommerce>(filePath);
+            return Ok();
         }
-
-        [HttpGet("import/internetuse")] //horrible temporary solution just for testing
-        public async Task<IActionResult> ImportInternetUse()
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("import/internetuse")] //horrible temporary solution just for testing
+        public async Task<IActionResult> ImportInternetUse(IFormFile file)
         {
-            var data = await _jsonService.ImportDataFromFile<InternetUse>("./Resources/internetuse_raw.json");
-            return Ok(data);
+            if (file == null)
+            {
+                return BadRequest();
+            }
+
+            string filePath = "./Resources/internetuse.json";
+
+            //saving file
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            var data = await _jsonService.ImportDataFromFile<InternetUse>(filePath);
+            return Ok();
         }
 
         [HttpGet("export/ecommerce")]

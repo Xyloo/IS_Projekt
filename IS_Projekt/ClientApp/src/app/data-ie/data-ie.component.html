@@ -1,0 +1,39 @@
+<div class="wrapper">
+  <div class="datawrapper">
+    <div class="label">
+      <h3>Import Data (.json / .xml)</h3>
+    </div>
+    <div class="selectwrapper">
+      <label for="file-input" class="custom-file-upload">
+        <input id="file-input" type="file" (change)="onFileSelected($event)">
+        Choose File
+      </label>
+      <div class="file-name">
+        Selected File: {{ fileName }}
+      </div>
+      <button class="custom-button" (click)="uploadFile()">Import</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+  <div class="datawrapper">
+    <div class="label">
+      <h3>Export Data (.json / .xml)</h3>
+    </div>
+    <div class="selectwrapper">
+      <label for="file-select" class="custom-file-upload">
+        Choose File
+      </label>
+      <div class="file-name">
+        <select id="file-select" [(ngModel)]="selectedFile">
+          <option value="internetuse.json">internetuse.json</option>
+          <option value="internetuse.xml">internetuse.xml</option>
+          <option value="ecommerce.json">ecommerce.json</option>
+          <option value="ecommerce.xml">ecommerce.xml</option>
+        </select>
+      </div>
+      <button class="custom-button" (click)="downloadFile()">Export</button>
+    </div>
+  </div>
+</div>

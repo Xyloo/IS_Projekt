@@ -3,12 +3,14 @@ import { DataService } from '../data.service';
 import { Chart, registerables } from 'chart.js';
 import { DataFilter } from '../data-filter';
 import { DataModel } from '../data-model';
+import { LineItem } from '../line-item';
 
 @Component({
   selector: 'app-main-graph',
   templateUrl: './main-graph.component.html',
   styleUrls: ['./main-graph.component.css']
 })
+
 export class MainGraphComponent {
 
   public years: number[] = [];
@@ -17,16 +19,26 @@ export class MainGraphComponent {
   public IC_InternetUse: string[] = [];
   public dataEC: DataModel[] = [];
   public dataIU: DataModel[] = [];
+  public charts = [];
 
-  selectedYears = [];
+  //user input
+  public selectedYears: number[] = [];
   selectedCountries = [];
   selectedIC_EC = [];
   selectedIC_IU = [];
 
   public chart: any;
-  isHidden: boolean = true; 
+  isHidden: boolean = true;
 
   constructor(private dataService: DataService) { }
+
+  getRandomRGB() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgb(${r},${g},${b})`;
+  }
+
 
 
   ngOnInit() {
@@ -42,67 +54,98 @@ export class MainGraphComponent {
     Chart.register(...registerables);
     this.isHidden = false;
 
-    let tempDataFilter: DataFilter = {
-      years: [2020, 2019, 2018],
-      countries: ["Italy"],
-      criteria: ["I_BLT12"]
+    //creating filters
+    let dataFilterEC: DataFilter = {
+      years: this.selectedYears,
+      countries: this.selectedCountries,
+      criteria: this.selectedIC_EC
+    };
+    let dataFilterIU: DataFilter = {
+      years: this.selectedYears,
+      countries: this.selectedCountries,
+      criteria: this.selectedIC_IU
     };
 
-    let tempDataFilter2: DataFilter = {
-      years: [2020, 2019, 2018],
-      countries: ["Italy"],
-      criteria: ["I_ILT12"]
-    };
-
-    this.dataService.getDataEC(tempDataFilter).subscribe(data => {
+    //geting data from endpoint
+    this.dataService.getDataEC(dataFilterEC).subscribe(data => {
       this.dataEC = data;
-    });
-    this.dataService.getDataIU(tempDataFilter2).subscribe(data => {
-      this.dataIU = data;
-    });
+      this.dataService.getDataIU(dataFilterIU).subscribe(data => {
+        this.dataIU = data;
 
-    console.log(this.dataIU);
-    console.log("EC", this.dataEC);
+        // Prepare the data for ecommerce
+        let labels = Array.from(new Set(this.dataEC.map((item: DataModel) => item.year))).sort();
+        let datasets: LineItem[] = [];
+        let linesArray: { [key: string]: LineItem } = {};
 
-    this.chart = new Chart("MyChart", {
-      type: 'line', //this denotes tha type of chart
+        for (let item of this.dataEC) {
+          let key = `${item.country} - ${item.individualCriteria}`;
 
-      data: {// values on X-Axis
-        labels: ['2022-05-10', '2022-05-11', '2022-05-12', '2022-05-13',
-          '2022-05-14', '2022-05-15', '2022-05-16', '2022-05-17'],
-        datasets: [
-          {
-            label: "Sales",
-            data: ['467', '576', '572', '79', '92',
-              '574', '573', '576'],
-            backgroundColor: 'blue'
+          if (!linesArray[key]) {
+            linesArray[key] = {
+              label: key,
+              data: [],
+              fill: false,
+              borderColor: this.getRandomRGB(),
+            };
+          }
+
+          let index = labels.indexOf(item.year);
+          linesArray[key].data[index] = item.value;
+        }
+
+        //Prepare the data for internetuse
+        for (let item of this.dataIU) {
+          let key = `${item.country} - ${item.individualCriteria}`;
+
+          if (!linesArray[key]) {
+            linesArray[key] = {
+              label: key,
+              data: [],
+              fill: false,
+              borderColor: this.getRandomRGB(),
+            };
+          }
+
+          let index = labels.indexOf(item.year);
+          linesArray[key].data[index] = item.value;
+        }
+
+        for (let key in linesArray) {
+          datasets.push(linesArray[key]);
+        }
+
+        this.chart = new Chart("MyChart", {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: datasets
           },
-          {
-            label: "Profit",
-            data: ['542', '542', '536', '327', '17',
-              '0.00', '538', '541'],
-            backgroundColor: 'limegreen'
+          options: {
+            aspectRatio: 2.5,
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
           }
-        ]
-      },
-      options: {
-        aspectRatio: 2.5
-        
-/*        ,plugins: {
-          title: {
-            display: true,
-              text: "Simple Chart",
+        });
+      });
+      });
 
-          }
-        }*/
-      }
 
-    });
+
   }
 
   deleteChart() {
+    this.dataEC = [];
+    this.dataIU = [];
+    this.selectedCountries = [];
+    this.selectedIC_EC = [];
+    this.selectedYears = [];
+    this.selectedIC_IU = [];
     this.chart.destroy();
     this.isHidden = true;
+
   }
 
 }

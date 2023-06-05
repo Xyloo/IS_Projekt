@@ -47,7 +47,7 @@ namespace IS_Projekt.Services
                 .Select(x => new T
                 {
                     IndividualCriteria = x.Element("indic_is")?.Value,
-                    Value = double.Parse(x.Element("OBS_VALUE")?.Value ?? "0.0", CultureInfo.InvariantCulture),
+                    Value = double.TryParse(x.Element("OBS_VALUE")?.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double obsValue) ? obsValue : 0.0,
                     UnitOfMeasure = x.Element("unit")?.Value,
                     Year = years.FirstOrDefault(y => y.Year == int.Parse(x.Element("TIME_PERIOD")?.Value ?? "0")),
                     Country = countries.FirstOrDefault(c => c.CountryCode == x.Element("geo")?.Value, countries.Last())
