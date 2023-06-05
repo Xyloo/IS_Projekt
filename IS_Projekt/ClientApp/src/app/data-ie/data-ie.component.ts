@@ -1,5 +1,6 @@
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
+
 import { finalize, Subscription } from 'rxjs';
 import { saveAs } from 'file-saver';
 
@@ -50,9 +51,9 @@ export class DataIEComponent {
 
   }
 
-  uploadFile() { 
+  uploadFile() {
     if (this.fileUpload) {
-      
+
       const formData = new FormData();
       formData.append("file", this.fileUpload, this.fileUpload.name);
       const upload$ = this.http.post(this.importURL, formData, {
@@ -73,11 +74,17 @@ export class DataIEComponent {
       },
         error => {
           // Handle error here
-          console.error('An error occurred while uploading the file.', error);
+          if (error.status === 403) {
+            // Handle unauthorized error here
+            window.alert('You are unauthorized to upload the file.');
+          } else {
+            console.error('An error occurred while uploading the file.', error);
+          }
         });
 
     }
   }
+
 
   reset() {
     this.uploadProgress = null;
@@ -87,12 +94,22 @@ export class DataIEComponent {
 
   downloadFile() {
     let temp = this.selectedFile.split(".");
-    console.log("temp: ", temp)
     let exportUrl = `/api/${temp[1]}/export/${temp[0]}`
 
-    this.http.get(exportUrl, { responseType: 'blob' }).subscribe((res: Blob) => {
-      saveAs(res, `${temp[0]}_export.${temp[1]}`);
-    });
+    this.http.get(exportUrl, { responseType: 'blob' }).subscribe(
+      (res: Blob) => {
+        saveAs(res, `${temp[0]}_export.${temp[1]}`);
+      },
+      (error) => {
+        if (error.status === 403) {
+          
+          window.alert('You are unauthorized.');
+        } else {
+          
+          console.error('An error occurred while downloading the file.', error);
+        }
+      }
+    );
   }
 
 }

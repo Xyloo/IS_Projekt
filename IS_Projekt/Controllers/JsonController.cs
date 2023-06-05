@@ -4,6 +4,8 @@ using Microsoft.Net.Http.Headers;
 using System.Net.Mime;
 using IS_Projekt.Extensions;
 using IS_Projekt.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace IS_Projekt.Controllers
 {
@@ -16,7 +18,7 @@ namespace IS_Projekt.Controllers
         {
             _jsonService = jsonService;
         }
-
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("import/ecommerce")] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportECommerce(IFormFile file)
         {
@@ -36,7 +38,7 @@ namespace IS_Projekt.Controllers
             var data = await _jsonService.ImportDataFromFile<ECommerce>(filePath);
             return Ok();
         }
-
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("import/internetuse")] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportInternetUse(IFormFile file)
         {

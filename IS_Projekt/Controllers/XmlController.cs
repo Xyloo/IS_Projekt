@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Net.Mime;
 using IS_Projekt.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace IS_Projekt.Controllers
 {
@@ -18,7 +21,7 @@ namespace IS_Projekt.Controllers
             _xmlService = xmlService;
             _logger = logger;
         }
-
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("import/internetuse")] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportInternetUse(IFormFile file)
         {
@@ -41,7 +44,7 @@ namespace IS_Projekt.Controllers
                 return BadRequest(ex.Message + "\n" + ex.StackTrace);
             }
         }
-
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("import/ecommerce")] //horrible temporary solution just for testing
         public async Task<IActionResult> ImportECommerce(IFormFile file)
         {

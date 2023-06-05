@@ -24,12 +24,19 @@ namespace IS_Projekt.Controllers
             return Ok(users);
         }
 
-        [HttpPost]
+        [HttpPost("createuser")]
         public async Task<IActionResult> Create(CreateUserDto userDto)
         {
-            //var user = await _userService.CreateUser(userDto);
+            User user = new User()
+            {
+                Username = userDto.Username,
+                Password = userDto.Password,
+                Email = userDto.Email,
+                Role = "user,admin"
+            };
+            var userCreate = await _userService.CreateUser(user);
 
-            return Ok();
+            return Ok(userCreate);
         }
 
         [HttpPost("register")]
@@ -45,7 +52,7 @@ namespace IS_Projekt.Controllers
                     Role = "user"
                 };
                 var userCreate = await _userService.CreateUser(user);
-                string token = _userService.GenerateToken(user);
+                //string token = _userService.GenerateToken(user);
                 return Ok();
 
             }

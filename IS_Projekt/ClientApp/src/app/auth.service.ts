@@ -17,7 +17,7 @@ export class AuthService {
         map((response: any) => {
           // save token in local storage if it exists
           if (response && response.token) {
-            localStorage.setItem('currentUser', JSON.stringify(response.token));
+            localStorage.setItem('currentUser', response.token);
           }
           this.isLogged = true;
           return response;
@@ -48,6 +48,11 @@ export class AuthService {
 
   isLoggedIn() {
     return this.isLogged;
+  }
+
+  getToken() {
+    let token = localStorage.getItem("currentUser");
+    return token ? token.replace(/"/g, '') : null;
   }
 
 
