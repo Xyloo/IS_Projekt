@@ -44,7 +44,7 @@ namespace IS_Projekt.Controllers
         {
             try
             {
-                User user = new User()
+                var user = new User()
                 {
                     Username = userDto.Username,
                     Password = userDto.Password,
@@ -52,18 +52,17 @@ namespace IS_Projekt.Controllers
                     Role = "user"
                 };
                 var userCreate = await _userService.CreateUser(user);
-                //string token = _userService.GenerateToken(user);
                 return Ok();
 
             }
-            catch (Exception ex) when (ex is UsernameExistsException || ex is EmailExistsException)
+            catch (Exception ex) when (ex is UsernameExistsException or EmailExistsException)
             {
                 return Conflict(ex.Message);
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
 
@@ -80,13 +79,13 @@ namespace IS_Projekt.Controllers
                 string token = _userService.GenerateToken(user);
                 return Ok(new { token });
             }
-            catch (Exception ex) when (ex is UserNotFoundException || ex is InvalidPasswordException)
+            catch (Exception ex) when (ex is UserNotFoundException or InvalidPasswordException)
             {
                 return Unauthorized(ex.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
     }
