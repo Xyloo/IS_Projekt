@@ -2,10 +2,10 @@
 
 namespace IS_Projekt.Controllers
 {
-    public interface IDataController
+    public interface IDataFileController
     {
-        public Task<IActionResult> ImportECommerce();
-        public Task<IActionResult> ImportInternetUse();
+        public Task<IActionResult> ImportECommerce(IFormFile file);
+        public Task<IActionResult> ImportInternetUse(IFormFile file);
         public Task<IActionResult> ExportECommerce();
         public Task<IActionResult> ExportInternetUse();
     }

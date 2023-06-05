@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Net.Mime;
 using IS_Projekt.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace IS_Projekt.Controllers
 {
     [ApiController]
     [Route("api/xml")]
-    public class XmlController : ControllerBase, IDataController
+    public class XmlController : ControllerBase, IDataFileController
     {
         private readonly IXmlService _xmlService;
         private readonly ILogger<XmlController> _logger;
@@ -18,20 +21,54 @@ namespace IS_Projekt.Controllers
             _xmlService = xmlService;
             _logger = logger;
         }
-
-        [HttpGet("import/internetuse")] //horrible temporary solution just for testing
-        public async Task<IActionResult> ImportInternetUse()
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("import/internetuse")] //horrible temporary solution just for testing
+        public async Task<IActionResult> ImportInternetUse(IFormFile file)
         {
-            var xml = await _xmlService.ImportDataFromFile<InternetUse>("./Resources/internet_use.xml");
-            return Ok(xml);
+            try
+            {
+                if (file == null)
+                {
+                    return BadRequest();
+                }
+                string filePath = "./Resources/internetuse.xml";
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+                var data = await _xmlService.ImportDataFromFile<InternetUse>(filePath);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.StackTrace);
+            }
+        }
+        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("import/ecommerce")] //horrible temporary solution just for testing
+        public async Task<IActionResult> ImportECommerce(IFormFile file)
+        {
+            try
+            {
+                if (file == null)
+                {
+                    return BadRequest();
+                }
+
+                string filePath = "./Resources/ecommerce.xml";
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+                var data = await _xmlService.ImportDataFromFile<ECommerce>(filePath);
+                return Ok();
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.StackTrace);
+            }
         }
 
-        [HttpGet("import/ecommerce")] //horrible temporary solution just for testing
-        public async Task<IActionResult> ImportECommerce()
-        {
-            var xml = await _xmlService.ImportDataFromFile<ECommerce>("./Resources/ecommerce.xml");
-            return Ok(xml);
-        }
+
 
         [HttpGet("export/ecommerce")]
         public async Task<IActionResult> ExportECommerce()

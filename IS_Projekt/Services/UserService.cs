@@ -1,4 +1,5 @@
-﻿using IS_Projekt.Extensions;
+﻿using IS_Projekt.Exceptions;
+using IS_Projekt.Extensions;
 using IS_Projekt.Models;
 using IS_Projekt.Repos;
 using Microsoft.AspNetCore.Identity;
@@ -24,15 +25,20 @@ namespace IS_Projekt.Services
         }
 
 
-        public async Task<User?> CreateUser(string username, string password)
+        public async Task<User?> CreateUser(User userData)
         {
-            var userExists = await _userRepository.GetUserByUsername(username);
+            var userExists = await _userRepository.GetUserByUsername(userData.Username);
+            var userExistsEmail = await _userRepository.GetUserByEmail(userData.Email);
             if (userExists != null) //if user exists, we can't create a new one
-                return null;
+                throw new UsernameExistsException();
+            if (userExistsEmail != null)
+                throw new EmailExistsException();
+
             var user = new User();
-            user.Username = username;
-            user.Password = _passwordHasher.HashPassword(user, password);
-            user.Role = "user";
+            user.Username = userData.Username;
+            user.Password = _passwordHasher.HashPassword(user, userData.Password);
+            user.Email = userData.Email;
+            user.Role = userData.Role;
             await _userRepository.CreateUser(user);
             return user;
         }
@@ -62,14 +68,16 @@ namespace IS_Projekt.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtKey);
+            string[] roles = user.Role.Split(",");  //roles in string - separated by ", "
+            var claims = new List<Claim>();
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Trim()));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                new Claim(ClaimTypes.Name, user.Username),
-                //new Claim(ClaimTypes.Role, user.Role.Name)
-                //add claims for roles
-            }),
+                Subject = new ClaimsIdentity(claims.ToArray()),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -77,8 +85,9 @@ namespace IS_Projekt.Services
             return tokenHandler.WriteToken(token);
         }
 
-
-
-
+        public async Task<User?> GetUserByUsername(string username)
+        {
+            return await _userRepository.GetUserByUsername(username);
+        }
     }
 }

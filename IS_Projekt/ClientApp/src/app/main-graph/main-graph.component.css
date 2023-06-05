@@ -1,0 +1,97 @@
+
+.select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0px;
+  background-color: rgb(89, 0, 202);
+  border-radius: 20px;
+}
+
+h1{
+    border-bottom: 1px solid white;
+}
+
+.dataSelect {
+  display: flex;
+  background-color: rgb(119, 12, 255);
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 30px;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.selectWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.select-container select {
+  width: 200px;
+  height: 150px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}
+
+.select-container button {
+  width: 200px;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background: rgb(46, 0, 104, 0.6);
+  color: white;
+  cursor: pointer;
+}
+
+  .select-container button:hover {
+    background: rgb(68, 0, 154);
+  }
+
+.select-label{
+    font-size: 1.2rem;
+    color: white;
+    font-weight: 600;
+
+}
+
+.chart-container{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 30px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.chart-label{
+  font-size: 1.5rem;
+  color: black;
+  font-weight: bold;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-radius: 0px 20px 0px 10px;
+  background-color: #f44336; /* Red background */
+  color: white; /* White text color */
+  font-size: 16px; /* Increase font size */
+  border: none; /* Remove border */
+  cursor: pointer; /* Cursor style */
+  padding: 10px 20px; /* Some padding */
+}

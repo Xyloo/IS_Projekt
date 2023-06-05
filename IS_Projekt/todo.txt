@@ -6,12 +6,6 @@ VIEW -> SQL Server Object Explorer ->
 	name localhost,1433 
 	password !root123456
 
-dodać eksport do XMLa
-
-
-//createusercontroller sprawdz najpierw czy uzytkownik istnieje
-//dodaj utoryzacje na rozne getuser getusers
-//seeder dla uzytkownikow
 <<<<<<< HEAD
 =======
 //dodaj role
@@ -28,20 +22,9 @@ YEAR -> time_period
 VALUE -> OBS_VALUE
 
 
-// interface jeden na repo -> repo na kazdy model XML JSON BAZA DANYCH
-// to samo z serwisami 1 interfejs 3 klasy
-// serwis  + kontroler crud na dane -> insertowanie do db itp
-// 
-
-ecommerce.json 5663 -> NULL OBS_VALUE
-
-json ecommerce mozna zmienic na jakas inna nazwe -> takie same obiekty sa dla jednego i drugiego chyba yea
-=
-
-
 ExportECommerceDataToFile do testa
 
-
+//adddata -> only for countries that are available in db
 
 
 
@@ -71,6 +54,8 @@ ExportECommerceDataToFile do testa
 
 
 transakcje 5p -> dwie transakcje -> wykonuja 2 operacje - kazda transakcja inny poziom izolacji
+jedna jest w CreateUser w UserRepository (serializable)
+druga DataRepository w ReplaceData (repeatable read) // funkcja helper
 
 
 
