@@ -1,5 +1,4 @@
-﻿using IS_Projekt.Extensions;
-using IS_Projekt.Models;
+﻿using IS_Projekt.Models;
 
 namespace IS_Projekt.Repos
 {

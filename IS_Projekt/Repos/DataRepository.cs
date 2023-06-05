@@ -3,11 +3,6 @@ using IS_Projekt.Dtos;
 using IS_Projekt.Extensions;
 using IS_Projekt.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Diagnostics.Metrics;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.VisualBasic;
 
 namespace IS_Projekt.Repos {
     public class DataRepository: IDataRepository {

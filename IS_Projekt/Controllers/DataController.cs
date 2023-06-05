@@ -2,13 +2,7 @@
 using IS_Projekt.Extensions;
 using IS_Projekt.Models;
 using IS_Projekt.Repos;
-using IS_Projekt.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
-using NuGet.Protocol.Core.Types;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Eventing.Reader;
-using System.Net.Mime;
 
 namespace IS_Projekt.Controllers
 {

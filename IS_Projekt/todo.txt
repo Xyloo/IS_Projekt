@@ -71,3 +71,5 @@ druga DataRepository w ReplaceData (repeatable read) // funkcja helper
 dwa zrodla danych 4 tabele z danymi przynajmniej i powiazane relacjami
 relacje w danych //ten sam rok kraj relacje  oddzielna tablea dla regionu i roku
 bazad danych 
+
+soap na froncie!!!!!!!!!!!!!!!!!!!!

@@ -1,15 +1,11 @@
-using System.ServiceModel;
 using IS_Projekt.Controllers;
 using IS_Projekt.Database;
 using IS_Projekt.Extensions;
 using IS_Projekt.Repos;
 using IS_Projekt.Services;
-using Microsoft.AspNetCore.Mvc.Formatters.Xml;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using SoapCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-
-namespace IS_Projekt.Extensions
+﻿namespace IS_Projekt.Extensions
 {
     class CountryCodes
     {

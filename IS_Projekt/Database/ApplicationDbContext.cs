@@ -1,11 +1,14 @@
 ﻿using IS_Projekt.Extensions;
 using IS_Projekt.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace IS_Projekt.Database
 {
     public class ApplicationDbContext : DbContext
     {
+        private PasswordHasher<User> _passwordHasher = new();
+
         public DbSet<User> Users { get; set; }
         public DbSet<InternetUse> InternetUseData { get; set; }
         public DbSet<ECommerce> ECommerceData { get; set; }
@@ -33,6 +36,15 @@ namespace IS_Projekt.Database
                 yearList.Add(new YearModel { Year = i, Id = i-2001 });
             }
 
+            var adminUser = new User
+            {
+                Username = "admin",
+                Role = "admin",
+                Email = ""
+            };
+            adminUser.Password = _passwordHasher.HashPassword(adminUser, "admin");
+
+
             // For example, to add a unique constraint on the Username property of User
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
@@ -43,6 +55,8 @@ namespace IS_Projekt.Database
 
             modelBuilder.Entity<YearModel>()
                 .HasData(yearList);
+
+            modelBuilder.Entity<User>().HasData(adminUser);
         }
 
     }
