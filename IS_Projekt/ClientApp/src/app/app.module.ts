@@ -43,7 +43,7 @@ import { TokenInterceptor } from './interceptors/token-interceptor';
       { path: 'register', component: RegisterComponent },
       { path: 'dataie', component: DataIEComponent , canActivate: [AuthGuard] },
       { path: 'users', component: DataIEComponent, canActivate: [AuthGuard] },
-      { path: 'home', component: MainGraphComponent, canActivate:[AuthGuard] }
+      { path: 'home', component: MainGraphComponent },// canActivate:[AuthGuard] }
     ])
   ],
   providers: [

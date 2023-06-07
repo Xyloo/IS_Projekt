@@ -29,7 +29,7 @@ namespace IS_Projekt.Controllers
                 {
                     return BadRequest();
                 }
-                string filePath = "./Resources/internetuse.xml";
+                string filePath = "./internetuse.xml";
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
@@ -53,7 +53,7 @@ namespace IS_Projekt.Controllers
                     return BadRequest();
                 }
 
-                string filePath = "./Resources/ecommerce.xml";
+                string filePath = "./ecommerce.xml";
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
@@ -71,7 +71,7 @@ namespace IS_Projekt.Controllers
         [HttpGet("export/ecommerce")]
         public async Task<IActionResult> ExportECommerce()
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/ecommerce_download.xml");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "ecommerce_download.xml");
 
             await _xmlService.ExportDataToFile<ECommerce>(filePath);
 
@@ -94,7 +94,7 @@ namespace IS_Projekt.Controllers
         [HttpGet("export/internetuse")]
         public async Task<IActionResult> ExportInternetUse()
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/internetuse_download.xml");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "internetuse_download.xml");
             await _xmlService.ExportDataToFile<InternetUse>(filePath);
 
             if (!System.IO.File.Exists(filePath))

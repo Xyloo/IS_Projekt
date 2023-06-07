@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "is_projekt": "StartWithoutDebugging",
+        "angular-app": "StartWithoutDebugging",
+        "db": "StartWithoutDebugging",
+        "reverse_proxy": "StartWithoutDebugging"
+      }
+    }
+  }
+}

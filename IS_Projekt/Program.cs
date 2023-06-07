@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllersWithViews().AddXmlSerializerFormatters();
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MsSqlConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("Server=10.5.0.5,1433;Database=db;User Id=sa;Password=!root123456;TrustServerCertificate=true;"));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -45,12 +45,19 @@ builder.Services.AddAuthentication(auth => {
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new
-        SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey("hardone123hardone123hardone123"u8.ToArray()),
         ClockSkew = TimeSpan.Zero
     };
 });
 
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    if (dbContext.Database.GetPendingMigrations().Any())
+    {
+        dbContext.Database.Migrate();
+    }
+}
 
 var app = builder.Build();
 
@@ -61,9 +68,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseSoapEndpoint<ISoapDataService>("/DataService.asmx", new SoapEncoderOptions());
+app.UseSoapEndpoint<ISoapDataService>("/api/DataService.asmx", new SoapEncoderOptions());
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 

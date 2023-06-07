@@ -38,6 +38,7 @@ namespace IS_Projekt.Database
 
             var adminUser = new User
             {
+                Id = 1,
                 Username = "admin",
                 Role = "admin",
                 Email = ""

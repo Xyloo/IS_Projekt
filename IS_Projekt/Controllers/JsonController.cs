@@ -26,7 +26,7 @@ namespace IS_Projekt.Controllers
                 return BadRequest();
             }
 
-            string filePath = "./Resources/ecommerce.json";
+            string filePath = "./ecommerce.json";
 
             //saving file
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -46,7 +46,7 @@ namespace IS_Projekt.Controllers
                 return BadRequest();
             }
 
-            string filePath = "./Resources/internetuse.json";
+            string filePath = "./internetuse.json";
 
             //saving file
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -61,7 +61,7 @@ namespace IS_Projekt.Controllers
         [HttpGet("export/ecommerce")]
         public async Task<IActionResult> ExportECommerce()
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/ecommerce_download.json");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "ecommerce_download.json");
 
             await _jsonService.ExportDataToFile<ECommerce>(filePath);
 
@@ -85,7 +85,7 @@ namespace IS_Projekt.Controllers
         [HttpGet("export/internetuse")]
         public async Task<IActionResult> ExportInternetUse()
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources/internetuse_download.json");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "internetuse_download.json");
             await _jsonService.ExportDataToFile<InternetUse>(filePath);
 
             if (!System.IO.File.Exists(filePath))
