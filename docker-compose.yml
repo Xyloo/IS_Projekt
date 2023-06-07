@@ -1,0 +1,52 @@
+version: '3.4'
+
+services:
+    db:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        environment:
+            ACCEPT_EULA: 'Y'
+            SA_PASSWORD: '!root123456'
+            MSSQL_DATABASE: 'db'
+        ports:
+            - '1433:1433'
+        networks:
+            back:
+                ipv4_address: 10.5.0.5
+    reverse_proxy:
+        build:
+            dockerfile: IS_Projekt/ReverseProxy/Dockerfile
+            context: .
+        image: ${DOCKER_REGISTRY-}reverseproxy
+        ports:
+            - "5000:80"
+            - "5001:5001"
+        networks:
+            - overlay
+        depends_on:
+            - frontend
+    frontend:
+        image: ${DOCKER_REGISTRY-}frontend
+        build:
+            dockerfile: IS_Projekt/ClientApp/Dockerfile
+        networks:
+            - overlay
+        depends_on:
+            - backend
+    backend:
+        image: ${DOCKER_REGISTRY-}backend
+        build:
+            context: .
+            dockerfile: IS_Projekt/Dockerfile
+        networks:
+            - overlay
+            - back
+ 
+networks:
+    overlay:
+    back:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 10.5.0.0/16
+                  gateway: 10.5.0.1
+   

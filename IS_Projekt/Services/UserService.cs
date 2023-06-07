@@ -21,7 +21,7 @@ namespace IS_Projekt.Services
         {
             _userRepository = userRepository;
             _passwordHasher = new PasswordHasher<User>();
-            _jwtKey = jwtSettings.Value.Key;
+            _jwtKey = "hardone123hardone123hardone123";
         }
 
 
