@@ -23,9 +23,18 @@ namespace IS_Projekt.Services
             _logger.LogInformation($"Type: {typeof(T)}");
             var first = data.First();
 
+            string rowElement = "";
+            if (typeof(T).Name == "ECommerce") {
+                rowElement = "ECommerce";
+            }
+            else if (typeof(T).Name == "InternetUse")
+            {
+                rowElement = "InternetUse";
+            }
+
             var xml = new XDocument(
-                new XElement("root",
-                    data.Select(dm => new XElement("row",
+                new XElement(rowElement + "s",
+                    data.Select(dm => new XElement(rowElement + "Data",
                         new XElement("TIME_PERIOD", dm.Year.Year),
                         new XElement("geo", dm.Country.CountryCode),
                         new XElement("unit", dm.UnitOfMeasure),
