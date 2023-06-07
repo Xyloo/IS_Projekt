@@ -25,3 +25,8 @@ is_projekt-backend-1        |       Content root path: /app
 )
 Do projektu dołączone są również gotowe pliki .xml oraz .json do importu. Baza danych domyślnie jest pusta.
 Do importu wymagane jest konto administratora, domyślnie utworzone. Username oraz hasło to 'admin'.
+
+## Opis
+Aplikacja umożliwia tworzenie wykresów na podstawie danych z bazy.
+Dane dotyczą użytkowania internetu (InternetUse) oraz poziomu korzystania z usług e-commerce (ECommerce) w krajach europejskich.
+Dane pochodzą z lat 2002-2022 i mogą być niepełne w zależności od kraju. Mogą też zdarzyć się lata, w których dane nie zostały zebrane.
