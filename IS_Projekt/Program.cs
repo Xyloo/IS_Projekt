@@ -50,15 +50,6 @@ builder.Services.AddAuthentication(auth => {
     };
 });
 
-using (var scope = builder.Services.BuildServiceProvider().CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    if (dbContext.Database.GetPendingMigrations().Any())
-    {
-        dbContext.Database.Migrate();
-    }
-}
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
